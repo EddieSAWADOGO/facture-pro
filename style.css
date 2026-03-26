@@ -23,3 +23,22 @@
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-thumb { background: #1d4ed8; }
 ::-webkit-scrollbar-track { background: #f1f5f9; }
+
+/* Optimisation pour les petits écrans (ex: Itel A70) */
+#invoice-preview {
+    max-width: 100%;
+    overflow-x: hidden;
+    word-wrap: break-word;
+}
+
+@media (max-width: 600px) {
+    #invoice-preview {
+        font-size: 0.75rem; /* Réduit la taille globale du texte */
+        padding: 8px !important;
+    }
+    
+    #invoice-preview table {
+        display: block;
+        overflow-x: auto; /* Permet de swiper le tableau s'il est trop large */
+    }
+}
