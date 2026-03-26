@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Facture | Eddie SAWADOGO</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        /* Forcer les angles droits partout pour le style Chariow/Sobre */
+        * { border-radius: 0 !important; transition: none !important; }
+        
+        /* Templates de typographie */
+        .template-classique { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+        .template-moderne { font-family: 'Georgia', serif; letter-spacing: 0.02em; }
+        .template-chariow { font-family: 'Inter', system-ui, sans-serif; text-transform: uppercase; font-size: 0.9em; }
+
+        /* Scrollbar discrète */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans flex flex-col min-h-screen">
+
+    <header class="bg-white border-b border-gray-200 p-4 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <h1 class="text-xl font-bold tracking-tight">
+                <i class="fa-solid fa-file-invoice mr-2 text-black"></i>Facture<span class="font-light text-gray-500">Express</span>
+            </h1>
+            <div class="flex items-center gap-2">
+                <label for="template-selector" class="text-sm text-gray-600 font-medium">Design :</label>
+                <select id="template-selector" class="border border-gray-300 p-2 text-sm bg-white focus:outline-none focus:border-black cursor-pointer" onchange="changeTemplate()">
+                    <option value="template-classique">Standard</option>
+                    <option value="template-moderne">Élégant (Serif)</option>
+                    <option value="template-chariow">Pro (Chariow Style)</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow p-4 md:p-6 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        <section class="space-y-6">
+            <div class="bg-white p-5 border border-gray-200 shadow-sm">
+                <h2 class="text-md font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide"><i class="fa-solid fa-building mr-2 text-gray-400"></i>Vos Informations</h2>
+                <div class="space-y-3">
+                    <input type="text" id="biller-name" placeholder="Nom de votre structure ou de la personne" class="w-full border border-gray-300 p-2 focus:border-black focus:outline-none" oninput="updatePreview()">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="biller-rccm" placeholder="N° RCCM" class="w-full border border-gray-300 p-2 focus:border-black focus:outline-none" oninput="updatePreview()">
+                        <input type="text" id="biller-ifu" placeholder="N° IFU" class="w-full border border-gray-300 p-2 focus:border-black focus:outline-none" oninput="updatePreview()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 border border-gray-200 shadow-sm">
+                <h2 class="text-md font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide"><i class="fa-solid fa-user-tie mr-2 text-gray-400"></i>Facturé à</h2>
+                <div class="space-y-3">
+                    <input type="text" id="client-name" placeholder="Nom du client ou structure" class="w-full border border-gray-300 p-2 focus:border-black focus:outline-none" oninput="updatePreview()">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="client-rccm" placeholder="RCCM (Optionnel)" class="w-full border border-gray-300 p-2 focus:border-black focus:outline-none" oninput="updatePreview()">
+                        <input type="text" id="client-ifu" placeholder="IFU (Optionnel)" class="w-full border border-gray-300 p-2 focus:border-black focus:outline-none" oninput="updatePreview()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 border border-gray-200 shadow-sm">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
+                    <h2 class="text-md font-bold uppercase tracking-wide"><i class="fa-solid fa-boxes-stacked mr-2 text-gray-400"></i>Détails</h2>
+                    <button onclick="addItem()" class="bg-gray-100 hover:bg-gray-200 text-black px-3 py-1 text-sm border border-gray-300 font-medium">
+                        <i class="fa-solid fa-plus mr-1"></i> Ajouter
+                    </button>
+                </div>
+                <div id="items-container" class="space-y-3">
+                    </div>
+                
+                <div class="mt-6 pt-4 border-t border-gray-100 flex items-center bg-gray-50 p-3">
+                    <input type="checkbox" id="apply-tva" class="w-4 h-4 text-black border-gray-300 cursor-pointer" onchange="updatePreview()">
+                    <label for="apply-tva" class="ml-2 text-sm font-bold text-gray-900 cursor-pointer">Calculer la TVA (18%)</label>
+                </div>
+            </div>
+        </section>
+
+        <section class="flex flex-col">
+            <div class="sticky top-24">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-md font-bold uppercase tracking-wide"><i class="fa-solid fa-eye mr-2 text-gray-400"></i>Aperçu</h2>
+                    <button onclick="downloadPDF()" class="bg-black text-white px-5 py-2 hover:bg-gray-800 flex items-center font-bold text-sm tracking-wide">
+                        <i class="fa-solid fa-download mr-2"></i> TÉLÉCHARGER PDF
+                    </button>
+                </div>
+
+                <div id="invoice-preview" class="bg-white p-8 border border-gray-300 shadow-sm template-classique text-sm min-h-[600px] flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between border-b-2 border-black pb-6 mb-8">
+                            <div>
+                                <h1 class="text-2xl font-black tracking-tight" id="prev-biller-name">NOM DE LA STRUCTURE</h1>
+                                <p class="text-gray-600 mt-2 font-medium">RCCM : <span id="prev-biller-rccm">-</span></p>
+                                <p class="text-gray-600 font-medium">IFU : <span id="prev-biller-ifu">-</span></p>
+                            </div>
+                            <div class="text-right">
+                                <h2 class="text-3xl font-light text-gray-400 uppercase">Facture</h2>
+                                <p class="mt-2 text-gray-800 font-bold">Date : <span id="prev-date"></span></p>
+                            </div>
+                        </div>
+
+                        <div class="mb-10 bg-gray-50 p-4 border border-gray-100 w-2/3">
+                            <p class="text-gray-500 text-xs uppercase font-bold tracking-widest mb-1">Facturé à :</p>
+                            <h3 class="text-lg font-bold text-black" id="prev-client-name">Nom du client</h3>
+                            <div class="mt-2 space-y-1">
+                                <p class="text-gray-600">RCCM : <span id="prev-client-rccm" class="font-medium text-black">-</span></p>
+                                <p class="text-gray-600">IFU : <span id="prev-client-ifu" class="font-medium text-black">-</span></p>
+                            </div>
+                        </div>
+
+                        <table class="w-full text-left border-collapse mb-8">
+                            <thead>
+                                <tr class="bg-black text-white">
+                                    <th class="py-3 px-4 font-bold text-xs uppercase tracking-wider w-1/2">Description</th>
+                                    <th class="py-3 px-4 font-bold text-xs uppercase tracking-wider text-center">Qté</th>
+                                    <th class="py-3 px-4 font-bold text-xs uppercase tracking-wider text-right">Prix Unitaire</th>
+                                    <th class="py-3 px-4 font-bold text-xs uppercase tracking-wider text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="prev-items-body">
+                                </tbody>
+                        </table>
+
+                        <div class="flex justify-end">
+                            <div class="w-full md:w-1/2 lg:w-2/3"></div>
+                            <div class="w-full md:w-1/2 lg:w-1/3 space-y-2">
+                                <div class="flex justify-between py-1 border-b border-gray-100">
+                                    <span class="text-gray-600 font-medium">Sous-total</span>
+                                    <span id="prev-subtotal" class="font-bold">0 CFA</span>
+                                </div>
+                                <div id="tva-row" class="flex justify-between py-1 border-b border-gray-100 hidden">
+                                    <span class="text-gray-600 font-medium">TVA (18%)</span>
+                                    <span id="prev-tva" class="font-bold">0 CFA</span>
+                                </div>
+                                <div class="flex justify-between py-3 mt-2 border-t-4 border-black text-xl font-black">
+                                    <span>NET À PAYER</span>
+                                    <span id="prev-total">0 CFA</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-16 text-center text-xs text-gray-500 border-t border-gray-200 pt-4 font-medium">
+                        <p><i class="fa-solid fa-circle-exclamation mr-1 text-gray-400"></i> Ceci n'est pas une facture officielle. Il appartient à l'intéressé d'y apposer un sticker fiscal.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-black text-white py-10 mt-12 border-t border-gray-800">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-start md:items-center space-y-6 md:space-y-0 text-sm">
+            <div class="text-left">
+                <h3 class="font-bold text-lg uppercase tracking-widest text-gray-200">FactureExpress</h3>
+                <p class="text-gray-400 mt-2 max-w-xs leading-relaxed">Un outil simple, rapide et sans fioritures pour générer vos factures en un clic.</p>
+            </div>
+            
+            <div class="flex flex-col space-y-3 text-gray-300">
+                <p class="text-gray-500 uppercase text-xs font-bold tracking-widest mb-1">Me Contacter</p>
+                <a href="https://wa.me/22667969761" target="_blank" class="hover:text-white flex items-center"><i class="fa-brands fa-whatsapp w-6 text-lg"></i> +226 67 96 97 61</a>
+                <a href="mailto:sawadogoeddie05@gmail.com" class="hover:text-white flex items-center"><i class="fa-solid fa-envelope w-6 text-lg"></i> sawadogoeddie05@gmail.com</a>
+            </div>
+            
+            <div class="flex flex-col space-y-3 text-gray-300">
+                <p class="text-gray-500 uppercase text-xs font-bold tracking-widest mb-1">Mes Réseaux</p>
+                <a href="https://www.facebook.com/profile.php?id=100066631119683" target="_blank" class="hover:text-white flex items-center"><i class="fa-brands fa-facebook w-6 text-lg"></i> Pazingba Eddie Christian</a>
+                <a href="https://www.linkedin.com/in/eddie-sawadogo" target="_blank" class="hover:text-white flex items-center"><i class="fa-brands fa-linkedin w-6 text-lg"></i> Eddie SAWADOGO</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // État de l'application
+        let items = [ { desc: '', qty: 1, price: 0 } ];
+
+        function init() {
+            // Remplir la date du jour
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('prev-date').textContent = today.toLocaleDateString('fr-FR', options);
+            
+            renderItems();
+            updatePreview();
+        }
+
+        function addItem() {
+            items.push({ desc: '', qty: 1, price: 0 });
+            renderItems();
+            updatePreview();
+        }
+
+        function removeItem(index) {
+            items.splice(index, 1);
+            renderItems();
+            updatePreview();
+        }
+
+        function updateItem(index, field, value) {
+            items[index][field] = value;
+            updatePreview();
+        }
+
+        function renderItems() {
+            const container = document.getElementById('items-container');
+            container.innerHTML = '';
+            items.forEach((item, index) => {
+                container.innerHTML += `
+                    <div class="flex flex-wrap md:flex-nowrap gap-2 items-center mb-2 bg-gray-50 p-2 border border-gray-200">
+                        <input type="text" placeholder="Description de l'article" class="flex-grow w-full md:w-auto border border-gray-300 p-2 focus:border-black focus:outline-none text-sm" value="${item.desc}" oninput="updateItem(${index}, 'desc', this.value)">
+                        <div class="flex gap-2 w-full md:w-auto">
+                            <input type="number" min="1" placeholder="Qté" class="w-16 border border-gray-300 p-2 focus:border-black focus:outline-none text-sm" value="${item.qty}" oninput="updateItem(${index}, 'qty', this.value)">
+                            <input type="number" min="0" placeholder="Prix Unitaire" class="w-28 border border-gray-300 p-2 focus:border-black focus:outline-none text-sm" value="${item.price}" oninput="updateItem(${index}, 'price', this.value)">
+                            <button onclick="removeItem(${index})" class="text-white bg-black hover:bg-red-600 px-3 py-2 text-sm" title="Supprimer la ligne">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updatePreview() {
+            // Mettre à jour les textes
+            document.getElementById('prev-biller-name').textContent = document.getElementById('biller-name').value || 'NOM DE LA STRUCTURE';
+            document.getElementById('prev-biller-rccm').textContent = document.getElementById('biller-rccm').value || '-';
+            document.getElementById('prev-biller-ifu').textContent = document.getElementById('biller-ifu').value || '-';
+            
+            document.getElementById('prev-client-name').textContent = document.getElementById('client-name').value || 'Nom du client';
+            document.getElementById('prev-client-rccm').textContent = document.getElementById('client-rccm').value || '-';
+            document.getElementById('prev-client-ifu').textContent = document.getElementById('client-ifu').value || '-';
+
+            // Mettre à jour le tableau
+            const tbody = document.getElementById('prev-items-body');
+            tbody.innerHTML = '';
+            let subtotal = 0;
+
+            items.forEach(item => {
+                const price = parseFloat(item.price) || 0;
+                const qty = parseInt(item.qty) || 0;
+                const totalLine = qty * price;
+                subtotal += totalLine;
+                
+                if(item.desc || price > 0) {
+                    tbody.innerHTML += `
+                        <tr class="border-b border-gray-200">
+                            <td class="py-3 px-4 text-gray-800">${item.desc || '...'}</td>
+                            <td class="py-3 px-4 text-center text-gray-800 font-medium">${qty}</td>
+                            <td class="py-3 px-4 text-right text-gray-800">${price.toLocaleString('fr-FR')}</td>
+                            <td class="py-3 px-4 text-right text-black font-bold">${totalLine.toLocaleString('fr-FR')}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            // Gérer les calculs (TVA et Total)
+            const applyTva = document.getElementById('apply-tva').checked;
+            const tva = applyTva ? subtotal * 0.18 : 0;
+            const total = subtotal + tva;
+
+            document.getElementById('prev-subtotal').textContent = subtotal.toLocaleString('fr-FR') + ' CFA';
+            
+            const tvaRow = document.getElementById('tva-row');
+            if(applyTva) {
+                tvaRow.classList.remove('hidden');
+                document.getElementById('prev-tva').textContent = tva.toLocaleString('fr-FR') + ' CFA';
+            } else {
+                tvaRow.classList.add('hidden');
+            }
+
+            document.getElementById('prev-total').textContent = total.toLocaleString('fr-FR') + ' CFA';
+        }
+
+        function changeTemplate() {
+            const selector = document.getElementById('template-selector');
+            const preview = document.getElementById('invoice-preview');
+            
+            // Retirer les anciennes classes
+            preview.classList.remove('template-classique', 'template-moderne', 'template-chariow');
+            // Appliquer la nouvelle typographie
+            preview.classList.add(selector.value);
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('invoice-preview');
+            // Options pour configurer html2pdf (format A4)
+            const opt = {
+                margin:       [10, 10, 10, 10],
+                filename:     'Facture_Express.pdf',
+                image:        { type: 'jpeg', quality: 1 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        // Démarrer l'application
+        window.onload = init;
+    </script>
+</body>
+</html>
