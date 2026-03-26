@@ -112,8 +112,29 @@ function changeTemplate() {
 
 function downloadPDF() {
     const element = document.getElementById('invoice-preview');
-    const opt = { margin: 10, filename: 'FacturePro_Export.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
-    html2pdf().set(opt).from(element).save();
+    
+    // On ajoute une classe pour forcer le format "Document" avant la capture
+    element.classList.add('pdf-export-mode');
+
+    const opt = { 
+        margin: 0, // Les marges sont gérées par le padding CSS pour plus de précision
+        filename: 'FacturePro_Export.pdf', 
+        image: { type: 'jpeg', quality: 0.98 }, 
+        html2canvas: { 
+            scale: 2, // Qualité équilibrée pour mobile
+            useCORS: true, 
+            width: 800, // On capture exactement 800px de largeur
+            windowWidth: 800
+        }, 
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+    };
+    
+    window.scrollTo(0,0);
+    
+    html2pdf().set(opt).from(element).save().then(() => {
+        // On retire la classe pour revenir à l'affichage mobile normal
+        element.classList.remove('pdf-export-mode');
+    });
 }
 
 window.onload = init;

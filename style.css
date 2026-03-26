@@ -1,7 +1,7 @@
 /* Forcer les angles droits partout */
 * { 
     border-radius: 0 !important; 
-    transition: all 0.2s ease-in-out !important; 
+    transition: none !important; /* Désactiver les transitions aide la capture mobile */
 }
 
 /* Templates de typographie et couleurs */
@@ -38,7 +38,26 @@
     }
     
     #invoice-preview table {
-        display: block;
-        overflow-x: auto; /* Permet de swiper le tableau s'il est trop large */
+        display: table; /* Force le mode tableau standard pour la capture */
+        width: 100%;
+        overflow-x: visible; 
     }
+
+    #invoice-preview td, #invoice-preview th {
+        word-break: break-all; /* Évite que le texte ne dépasse sur mobile */
+        font-size: 0.7rem;
+    }
+}
+
+/* Classe spéciale déclenchée par le JavaScript lors de l'export PDF */
+.pdf-export-mode {
+    width: 800px !important;
+    max-width: 800px !important;
+    padding: 40px !important;
+    background: white !important;
+    font-size: 14px !important;
+}
+
+.pdf-export-mode table {
+    font-size: 12px !important;
 }
