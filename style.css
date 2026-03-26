@@ -1,0 +1,25 @@
+/* Forcer les angles droits partout */
+* { 
+    border-radius: 0 !important; 
+    transition: all 0.2s ease-in-out !important; 
+}
+
+/* Templates de typographie et couleurs */
+.template-classique { 
+    font-family: 'Inter', system-ui, sans-serif; 
+}
+
+.template-moderne { 
+    font-family: 'Georgia', serif; 
+    letter-spacing: 0.01em; 
+}
+
+.template-minimal { 
+    font-family: 'Courier New', Courier, monospace; 
+    font-size: 0.85em; 
+}
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: #1d4ed8; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
