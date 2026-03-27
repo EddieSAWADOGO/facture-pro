@@ -298,15 +298,14 @@ function downloadPDF() {
 
     setTimeout(() => {
         html2canvas(element, {
-            scale: 10, // Qualité ultra-haute pour texte net et lisible
+            scale: 2, // Qualité optimisée pour fichier léger
             useCORS: true,
             allowTaint: true,
             backgroundColor: '#ffffff',
             logging: false,
-            imageTimeout: 15000,
+            imageTimeout: 10000,
             windowHeight: element.scrollHeight,
             windowWidth: element.scrollWidth,
-            letterRendering: true, // Améliore le rendu du texte
             removeContainer: false
         }).then(canvas => {
             const { jsPDF } = window.jspdf;
@@ -318,16 +317,16 @@ function downloadPDF() {
             let heightLeft = imgHeight;
             let position = 0;
             
-            // Utiliser PNG pour meilleure qualité (par défaut JPEG)
-            const imgData = canvas.toDataURL('image/png', 1.0); 
+            // Utiliser JPEG pour fichier léger avec compression
+            const imgData = canvas.toDataURL('image/jpeg', 0.85); 
             
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
             
             while (heightLeft > 0) {
                 position = heightLeft - imgHeight;
                 pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
             }
             
