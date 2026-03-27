@@ -24,24 +24,28 @@
         </div>
     </div>
 
-    <header class="bg-white border-b-2 border-blue-700 p-4 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <h1 class="text-xl font-bold tracking-tight">
-                <i class="fa-solid fa-file-invoice mr-2 text-blue-700"></i>Facture<span class="text-blue-700">Pro</span>
+    <header class="bg-white border-b-2 border-blue-700 px-3 py-2 md:p-4 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto flex flex-row justify-between items-center gap-2">
+            <h1 class="text-lg md:text-xl font-bold tracking-tight whitespace-nowrap">
+                <i class="fa-solid fa-file-invoice mr-1 text-blue-700"></i>Facture<span class="text-blue-700">Pro</span>
             </h1>
-            <div class="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 w-full md:w-auto">
-                <div class="flex items-center gap-2">
-                    <label for="font-selector" class="text-sm text-gray-600 font-medium whitespace-nowrap">Police :</label>
-                    <select id="font-selector" class="border border-gray-300 p-1 text-xs md:text-sm bg-white focus:outline-none focus:border-blue-700 cursor-pointer" onchange="changeFont()">
+            <div class="flex flex-row items-center gap-2 md:gap-4 overflow-x-auto">
+                <div class="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded hidden sm:flex">
+                    <i class="fa-solid fa-palette text-blue-700 text-[10px]"></i>
+                    <span class="text-[10px] font-bold text-blue-800 uppercase tracking-tighter">Style</span>
+                </div>
+                <div class="flex items-center gap-1 md:gap-2">
+                    <label for="font-selector" class="header-label">Police :</label>
+                    <select id="font-selector" class="header-select" onchange="changeFont()">
                         <option value="font-sans">Standard</option>
                         <option value="font-serif">Serif Élégant</option>
                         <option value="font-mono">Monospace</option>
                         <option value="font-modern">Modern Géométrique</option>
                     </select>
                 </div>
-                <div class="flex items-center gap-2">
-                    <label for="color-selector" class="text-sm text-gray-600 font-medium whitespace-nowrap">Couleur :</label>
-                    <select id="color-selector" class="border border-gray-300 p-1 text-xs md:text-sm bg-white focus:outline-none focus:border-blue-700 cursor-pointer" onchange="changeColor()">
+                <div class="flex items-center gap-1 md:gap-2">
+                    <label for="color-selector" class="header-label">Couleur :</label>
+                    <select id="color-selector" class="header-select" onchange="changeColor()">
                         <option value="color-blue">Bleu Professionnel</option>
                         <option value="color-green">Vert Naturel</option>
                         <option value="color-red">Rouge Premium</option>
@@ -53,6 +57,7 @@
             </div>
         </div>
     </header>
+   
 
     <main class="flex-grow p-4 md:p-6 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
 
