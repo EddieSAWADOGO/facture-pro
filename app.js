@@ -289,85 +289,68 @@ function changeColor() {
     preview.classList.add(selector.value);
 }
 
-function downloadPDF() {
-    const element = document.getElementById('invoice-preview');
+async function downloadPDF() {
+    const originalElement = document.getElementById('invoice-preview');
     const loader = document.getElementById('pdf-loader');
     
-    // Sur mobile, on ramène l'utilisateur vers l'aperçu pour qu'il voie la capture
-    if (window.innerWidth <= 1023) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    element.classList.add('pdf-export-mode');
-    document.body.style.overflow = 'hidden'; // "Détache" la vue en bloquant le scroll
     loader.classList.remove('hidden');
 
-    // Détermine l'échelle en fonction de l'appareil pour une meilleure performance mobile
-    const scale = window.innerWidth <= 1023 ? 1 : 2; // Utilise l'échelle 1 pour mobile, 2 pour desktop
+    // Création d'un clone invisible pour ne pas altérer l'affichage mobile
+    const clone = originalElement.cloneNode(true);
+    clone.classList.add('pdf-export-mode');
+    
+    // Style pour rendre le clone invisible mais capturable
+    Object.assign(clone.style, {
+        position: 'absolute',
+        top: '-9999px',
+        left: '0',
+        width: '210mm',
+        display: 'block',
+        visibility: 'visible'
+    });
+    
+    document.body.appendChild(clone);
 
-    setTimeout(() => { // Délai pour que le DOM se mette à jour et les styles soient appliqués
-        html2canvas(element, {
-            scale: scale, // Utilise l'échelle dynamique
+    try {
+        // Utilisation d'un scale de 2 pour une qualité "Retina" même sur mobile
+        const canvas = await html2canvas(clone, {
+            scale: 2,
             useCORS: true,
             allowTaint: true,
             backgroundColor: '#ffffff',
-            logging: true, // Re-active le logging pour le debug
-            imageTimeout: 10000, // Le timeout pour le chargement des images
-            scrollY: 0, // IMPORTANT : Ignore le scroll actuel pour éviter le PDF blanc
-            removeContainer: false
-        }).then(canvas => {
-            console.log('html2canvas a généré le canevas :', canvas);
-            console.log('Dimensions du canevas :', canvas.width, 'x', canvas.height);
-            
-            // Vérifie si le canevas est réellement vide (tous les pixels sont transparents ou noirs)
-            const ctx = canvas.getContext('2d');
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            let isCanvasBlank = true;
-            for (let i = 0; i < imageData.data.length; i++) {
-                if (imageData.data[i] !== 0) { // Vérifie si un canal de pixel a une valeur non nulle
-                    isCanvasBlank = false;
-                    break;
-                }
-            }
-            console.log('Le canevas est-il vierge (tous les canaux à zéro) ?', isCanvasBlank);
-            if (isCanvasBlank) {
-                alert('Le contenu du PDF semble être vide. Cela peut être dû à des problèmes de rendu sur mobile (mémoire insuffisante). Essayez de rafraîchir la page ou de réduire la complexité de la facture.');
-            }
+            logging: false,
+            windowWidth: 794 // Largeur A4 en pixels (96 DPI)
+        });
 
-            const { jsPDF } = window.jspdf;
-            const imgWidth = 210;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            const pageHeight = 295;
-            
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            let heightLeft = imgHeight;
-            let position = 0;
-            
-            // Utiliser JPEG pour fichier léger avec compression
-            const imgData = canvas.toDataURL('image/jpeg', 0.85); 
-            
+        const { jsPDF } = window.jspdf;
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const pageHeight = 297;
+        
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
             pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
-            
-            while (heightLeft > 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-            }
-            
-            pdf.save('FacturePro_Export.pdf');
-            element.classList.remove('pdf-export-mode');
-            document.body.style.overflow = ''; // Réactive le défilement
-            loader.classList.add('hidden');
-        }).catch(err => {
-            console.error('Erreur lors de la génération du PDF:', err);
-            element.classList.remove('pdf-export-mode');
-            document.body.style.overflow = ''; // Réactive le défilement
-            loader.classList.add('hidden');
-            alert('Erreur PDF: ' + err.message);
-        });
-    }, 1000); // Délai augmenté à 1 seconde
+        }
+
+        pdf.save(`Facture_${document.getElementById('client-name').value || 'Client'}.pdf`);
+    } catch (err) {
+        console.error('Erreur PDF:', err);
+        alert('Une erreur est survenue lors de la génération.');
+    } finally {
+        document.body.removeChild(clone);
+        loader.classList.add('hidden');
+    }
 }
 
 window.onload = init;

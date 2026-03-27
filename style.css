@@ -526,13 +526,15 @@ main {
 
 /* Classe spéciale déclenchée par le JavaScript lors de l'export PDF */
 .pdf-export-mode {
-    width: 210mm !important;
-    max-width: 210mm !important;
+    width: 210mm !important; 
+    min-height: 297mm !important;
+    max-width: none !important;
     padding: 14mm !important;
     background: white !important;
     font-size: 14px !important;
-    margin: 0 auto !important;
+    margin: 0 !important;
     line-height: 1.6 !important;
+    box-sizing: border-box !important;
 }
 
 .pdf-export-mode p {
