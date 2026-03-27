@@ -293,21 +293,47 @@ function downloadPDF() {
     const element = document.getElementById('invoice-preview');
     const loader = document.getElementById('pdf-loader');
     
+    // Sur mobile, on ramène l'utilisateur vers l'aperçu pour qu'il voie la capture
+    if (window.innerWidth <= 1023) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     element.classList.add('pdf-export-mode');
+    document.body.style.overflow = 'hidden'; // "Détache" la vue en bloquant le scroll
     loader.classList.remove('hidden');
 
-    setTimeout(() => {
+    // Détermine l'échelle en fonction de l'appareil pour une meilleure performance mobile
+    const scale = window.innerWidth <= 1023 ? 1 : 2; // Utilise l'échelle 1 pour mobile, 2 pour desktop
+
+    setTimeout(() => { // Délai pour que le DOM se mette à jour et les styles soient appliqués
         html2canvas(element, {
-            scale: 2, // Qualité optimisée pour fichier léger
+            scale: scale, // Utilise l'échelle dynamique
             useCORS: true,
             allowTaint: true,
             backgroundColor: '#ffffff',
-            logging: false,
-            imageTimeout: 10000,
-            windowHeight: element.scrollHeight,
-            windowWidth: element.scrollWidth,
+            logging: true, // Re-active le logging pour le debug
+            imageTimeout: 10000, // Le timeout pour le chargement des images
+            scrollY: 0, // IMPORTANT : Ignore le scroll actuel pour éviter le PDF blanc
             removeContainer: false
         }).then(canvas => {
+            console.log('html2canvas a généré le canevas :', canvas);
+            console.log('Dimensions du canevas :', canvas.width, 'x', canvas.height);
+            
+            // Vérifie si le canevas est réellement vide (tous les pixels sont transparents ou noirs)
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            let isCanvasBlank = true;
+            for (let i = 0; i < imageData.data.length; i++) {
+                if (imageData.data[i] !== 0) { // Vérifie si un canal de pixel a une valeur non nulle
+                    isCanvasBlank = false;
+                    break;
+                }
+            }
+            console.log('Le canevas est-il vierge (tous les canaux à zéro) ?', isCanvasBlank);
+            if (isCanvasBlank) {
+                alert('Le contenu du PDF semble être vide. Cela peut être dû à des problèmes de rendu sur mobile (mémoire insuffisante). Essayez de rafraîchir la page ou de réduire la complexité de la facture.');
+            }
+
             const { jsPDF } = window.jspdf;
             const imgWidth = 210;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
@@ -332,14 +358,16 @@ function downloadPDF() {
             
             pdf.save('FacturePro_Export.pdf');
             element.classList.remove('pdf-export-mode');
+            document.body.style.overflow = ''; // Réactive le défilement
             loader.classList.add('hidden');
         }).catch(err => {
-            console.error('Erreur:', err);
+            console.error('Erreur lors de la génération du PDF:', err);
             element.classList.remove('pdf-export-mode');
+            document.body.style.overflow = ''; // Réactive le défilement
             loader.classList.add('hidden');
             alert('Erreur PDF: ' + err.message);
         });
-    }, 500); // Délai pour que le DOM se mette à jour
+    }, 1000); // Délai augmenté à 1 seconde
 }
 
 window.onload = init;
