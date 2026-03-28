@@ -7,7 +7,7 @@ const burkinaTaxes = [
     { name: 'TVA (5.5%)', rate: 5.5 },
     { name: 'Taxe d\'habitation', rate: 10 },
     { name: 'Taxe professionnelle', rate: 2 },
-    { name: 'Sans taxe (personnalisée)', rate: 0, custom: true }
+    { name: 'Taxe personnalisée', rate: 0, custom: true }
 ];
 
 // Taxes appliquées
@@ -114,9 +114,11 @@ function addTax() {
     const customName = document.getElementById('custom-tax-name').value;
     const customRate = parseFloat(document.getElementById('custom-tax-rate').value) || 0;
     
+    const selectedPreset = burkinaTaxes[presetIndex];
     let tax;
-    if (presetIndex !== 'custom') {
-        tax = { ...burkinaTaxes[presetIndex], applied: true };
+    // On vérifie si le preset sélectionné n'est PAS marqué comme personnalisé
+    if (selectedPreset && !selectedPreset.custom) {
+        tax = { ...selectedPreset, applied: true };
     } else {
         if (!customName || customRate === 0) {
             alert('Veuillez entrer le nom et le taux de la taxe');
