@@ -218,6 +218,7 @@ function updatePreview() {
     // Vos Infos
     document.getElementById('prev-biller-name').textContent = document.getElementById('biller-name').value || 'NOM DE VOTRE STRUCTURE';
     document.getElementById('prev-biller-phone').textContent = document.getElementById('biller-phone').value || 'Téléphone non spécifié';
+    document.getElementById('prev-biller-address').textContent = document.getElementById('biller-address').value || '-';
     document.getElementById('prev-biller-rccm').textContent = document.getElementById('biller-rccm').value || '-';
     document.getElementById('prev-biller-ifu').textContent = document.getElementById('biller-ifu').value || '-';
     
