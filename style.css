@@ -551,7 +551,7 @@ button, input, select, textarea, .bg-white:not(#invoice-preview), #pdf-loader > 
     width: 210mm !important; 
     min-height: 297mm !important;
     max-width: none !important;
-    padding: 15mm !important; /* Bordure de 1,5 cm demandée */
+    padding: 60mm !important; /* Marges augmentées à 4 cm */
     background: white !important;
     font-size: 13.4pt !important; /* Taille standard Word demandée */
     margin: 0 !important;
@@ -690,78 +690,6 @@ button, input, select, textarea, .bg-white:not(#invoice-preview), #pdf-loader > 
     }
 }
 
-/* ===== MODE TICKET DE CAISSE (80mm) ===== */
-.pdf-export-80mm {
-    width: 80mm !important;
-    min-height: auto !important;
-    max-width: none !important;
-    padding: 5mm !important;
-    background: white !important;
-    font-size: 10px !important;
-    margin: 0 !important;
-    line-height: 1.2 !important;
-    box-sizing: border-box !important;
-    display: block !important;
-    box-shadow: none !important;
-    border: none !important;
-}
-
-.pdf-export-80mm *, .pdf-export-80mm p, .pdf-export-80mm h1, .pdf-export-80mm h2, .pdf-export-80mm span {
-    word-break: break-word !important;
-    white-space: normal !important;
-}
-
-.pdf-export-80mm h1 {
-    font-size: 14px !important;
-    margin: 4px 0 !important;
-}
-
-.pdf-export-80mm h2 {
-    font-size: 12px !important;
-    margin: 4px 0 !important;
-}
-
-.pdf-export-80mm .text-3xl {
-    font-size: 16px !important;
-    margin-bottom: 5px !important;
-}
-
-.pdf-export-80mm table {
-    font-size: 10px !important;
-    margin: 8px 0 !important;
-}
-
-.pdf-export-80mm td, .pdf-export-80mm th {
-    padding: 4px 1px !important;
-    border: 0.5px solid #ccc !important;
-}
-
-.pdf-export-80mm .flex {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: flex-start !important;
-    text-align: left !important;
-}
-
-.pdf-export-80mm #prev-logo-container {
-    text-align: center !important;
-    margin-bottom: 10px !important;
-}
-
-.pdf-export-80mm .w-3\/5, .pdf-export-80mm .w-2\/5 {
-    width: 100% !important;
-}
-
-.pdf-export-80mm .border-custom-blue {
-    border-bottom-width: 1px !important;
-    margin-bottom: 10px !important;
-    padding-bottom: 5px !important;
-}
-
-.pdf-export-80mm #prev-logo {
-    max-height: 40px !important;
-}
 
 /* ===== PDF EXPORT - TABLE COLUMN WIDTHS (Correction Syntaxe) ===== */
 .pdf-export-mode table th:nth-child(1),

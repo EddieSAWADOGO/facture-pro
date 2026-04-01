@@ -301,22 +301,13 @@ function changeColor() {
 async function downloadPDF() {
     const originalElement = document.getElementById('invoice-preview');
     const loader = document.getElementById('pdf-loader');
-    let format = document.getElementById('format-selector').value;
-    if (!format) format = 'a4'; // Par défaut si non sélectionné explicitement
     
     loader.classList.remove('hidden');
 
     // Création d'un clone invisible pour ne pas altérer l'affichage mobile
     const clone = originalElement.cloneNode(true);
     
-    // Application de la classe selon le format choisi
-    if (format === '80mm') {
-        clone.classList.remove('pdf-export-mode'); // Sécurité
-        clone.classList.add('pdf-export-80mm');
-        clone.style.width = '80mm';
-    } else {
-        clone.classList.add('pdf-export-mode');
-    }
+    clone.classList.add('pdf-export-mode');
     
     // Style pour rendre le clone invisible mais capturable
     Object.assign(clone.style, {
@@ -330,58 +321,47 @@ async function downloadPDF() {
         backgroundColor: '#ffffff'
     });
     
-    if (format !== '80mm') clone.style.width = '210mm';
+    clone.style.width = '210mm';
     
     document.body.appendChild(clone);
 
     try {
-        // Passage au scale 3 pour une qualité d'impression professionnelle (proche de 300 DPI)
         const canvas = await html2canvas(clone, {
-            scale: 3,
+            scale: 4, // Qualité ultra-haute pour impression
             useCORS: true,
             allowTaint: true,
-            letterRendering: true, // Améliore la précision du placement des lettres
+            letterRendering: true,
             backgroundColor: '#ffffff',
             logging: false,
-            windowWidth: format === '80mm' ? 302 : 794 // 302px ~ 80mm à 96 DPI
+            windowWidth: 1122 // Force le rendu A4 standard
         });
 
         const { jsPDF } = window.jspdf;
-        const imgData = canvas.toDataURL('image/jpeg', 0.98); // Augmentation de la qualité JPEG
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        const now = new Date();
+        const timestamp = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}_${now.getHours()}h${now.getMinutes()}`;
+        const clientName = document.getElementById('client-name').value || 'Client';
         
-        if (format === '80mm') {
-            // Format Ticket : Une seule page longue et continue
-            const imgWidth = 80;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            const pdf = new jsPDF('p', 'mm', [80, imgHeight]);
-            pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-            
-            const filename = `Ticket_${document.getElementById('client-name').value || 'Client'}.pdf`;
-            pdf.save(filename);
-        } else {
-            // Format A4 : Gestion multi-pages standard
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgWidth = 210;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            const pageHeight = 297;
-            
-            let heightLeft = imgHeight;
-            let position = 0;
+        // Format A4 : Gestion multi-pages standard
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const pageHeight = 297;
+        
+        let heightLeft = imgHeight;
+        let position = 0;
 
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
             pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
-
-            while (heightLeft > 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-            }
-            
-            const now = new Date();
-            const timestamp = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}_${now.getHours()}h${now.getMinutes()}`;
-            pdf.save(`Facture_${document.getElementById('client-name').value || 'Client'}_${timestamp}.pdf`);
         }
+        pdf.save(`Facture_${clientName}_${timestamp}.pdf`);
+
     } catch (err) {
         console.error('Erreur PDF:', err);
         alert('Une erreur est survenue lors de la génération.');
