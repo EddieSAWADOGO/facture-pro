@@ -34,6 +34,7 @@ function init() {
     const day = String(today.getDate()).padStart(2, '0');
     document.getElementById('invoice-date').value = `${year}-${month}-${day}`;
     
+    loadBillerInfo();
     updateInvoiceDate();
     populateTaxDropdown();
     renderItems();
@@ -65,8 +66,39 @@ function handleLogoUpload(event) {
             const logoPrev = document.getElementById('prev-logo');
             logoPrev.src = e.target.result;
             document.getElementById('prev-logo-container').classList.remove('hidden');
+            saveBillerInfo();
         };
         reader.readAsDataURL(file);
+    }
+}
+
+function saveBillerInfo() {
+    const billerData = {
+        name: document.getElementById('biller-name').value,
+        rccm: document.getElementById('biller-rccm').value,
+        ifu: document.getElementById('biller-ifu').value,
+        email: document.getElementById('biller-email').value,
+        phone: document.getElementById('biller-phone').value,
+        address: document.getElementById('biller-address').value,
+        logo: document.getElementById('prev-logo').src
+    };
+    localStorage.setItem('facturePro_biller', JSON.stringify(billerData));
+}
+
+function loadBillerInfo() {
+    const saved = localStorage.getItem('facturePro_biller');
+    if (saved) {
+        const data = JSON.parse(saved);
+        document.getElementById('biller-name').value = data.name || '';
+        document.getElementById('biller-rccm').value = data.rccm || '';
+        document.getElementById('biller-ifu').value = data.ifu || '';
+        document.getElementById('biller-email').value = data.email || '';
+        document.getElementById('biller-phone').value = data.phone || '';
+        document.getElementById('biller-address').value = data.address || '';
+        if (data.logo && data.logo.startsWith('data:image')) {
+            document.getElementById('prev-logo').src = data.logo;
+            document.getElementById('prev-logo-container').classList.remove('hidden');
+        }
     }
 }
 
@@ -165,56 +197,8 @@ function renderAppliedTaxes() {
     });
 }
 
-// Convertir les nombres en lettres (français)
-function numberToWords(num) {
-    const ones = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf'];
-    const teens = ['dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
-    const tens = ['', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante-dix', 'quatre-vingt', 'quatre-vingt-dix'];
-    const scales = ['', 'mille', 'million', 'milliard'];
-
-    if (num === 0) return 'zéro';
-    if (num < 0) return 'moins ' + numberToWords(-num);
-
-    let words = '';
-    let scaleIndex = 0;
-
-    while (num > 0) {
-        if (num % 1000 !== 0) {
-            words = convertBelow1000(num % 1000, ones, teens, tens) + (scales[scaleIndex] ? ' ' + scales[scaleIndex] : '') + (words ? ' ' + words : '');
-        }
-        num = Math.floor(num / 1000);
-        scaleIndex++;
-    }
-
-    return words.trim();
-}
-
-function convertBelow1000(num, ones, teens, tens) {
-    let result = '';
-
-    const hundreds = Math.floor(num / 100);
-    if (hundreds > 0) {
-        result += ones[hundreds] + ' cent';
-        if (hundreds > 1 && num % 100 === 0) result += 's';
-        num %= 100;
-        if (num > 0) result += ' ';
-    }
-
-    if (num >= 20) {
-        const ten = Math.floor(num / 10);
-        const one = num % 10;
-        result += tens[ten];
-        if (one > 0) result += (ten === 8 ? '-' : '-') + ones[one];
-    } else if (num >= 10) {
-        result += teens[num - 10];
-    } else if (num > 0) {
-        result += ones[num];
-    }
-
-    return result.trim();
-}
-
 function updatePreview() {
+    saveBillerInfo();
     // Vos Infos
     document.getElementById('prev-biller-name').textContent = document.getElementById('biller-name').value || 'NOM DE VOTRE STRUCTURE';
     document.getElementById('prev-biller-phone').textContent = document.getElementById('biller-phone').value || 'Téléphone non spécifié';
@@ -241,7 +225,7 @@ function updatePreview() {
     items.forEach(item => {
         const price = parseFloat(item.price) || 0;
         const qty = parseInt(item.qty) || 0;
-        const totalLine = qty * price;
+        const totalLine = Math.round(qty * price * 100) / 100;
         subtotal += totalLine;
         
         tbody.innerHTML += `
@@ -256,9 +240,10 @@ function updatePreview() {
 
     let taxesAmount = 0;
     appliedTaxes.forEach(tax => {
-        taxesAmount += subtotal * (tax.rate / 100);
+        const taxAmount = Math.round(subtotal * (tax.rate / 100) * 100) / 100;
+        taxesAmount += taxAmount;
     });
-    const total = subtotal + taxesAmount;
+    const total = Math.round((subtotal + taxesAmount) * 100) / 100;
 
     document.getElementById('prev-subtotal').textContent = subtotal.toLocaleString('fr-FR') + ' CFA';
     
@@ -266,7 +251,7 @@ function updatePreview() {
     const taxesContainer = document.getElementById('prev-taxes-container');
     taxesContainer.innerHTML = '';
     appliedTaxes.forEach(tax => {
-        const taxAmount = subtotal * (tax.rate / 100);
+        const taxAmount = Math.round(subtotal * (tax.rate / 100) * 100) / 100;
         taxesContainer.innerHTML += `
             <div class="flex justify-between py-1 border-b border-gray-100">
                 <span class="text-gray-600 font-medium">${tax.name}</span>
