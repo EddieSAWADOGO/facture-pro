@@ -307,6 +307,7 @@ async function downloadPDF() {
     // Création d'un clone invisible pour ne pas altérer l'affichage mobile
     const clone = originalElement.cloneNode(true);
     
+    // On s'assure que l'ID est conservé ou ciblé correctement pour le CSS
     clone.classList.add('pdf-export-mode');
     
     // Style pour rendre le clone invisible mais capturable
