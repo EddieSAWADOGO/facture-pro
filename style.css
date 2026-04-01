@@ -12,23 +12,47 @@ header {
 
 /* Style des labels et selects du header */
 .header-label {
-    font-size: 10px !important;
+    font-size: 11px !important;
     font-weight: 800 !important;
     text-transform: uppercase !important;
     color: #4b5563 !important;
-    display: none; /* Masqué sur mobile pour gagner de la place */
+    display: inline-block !important;
 }
 
 .header-select {
     appearance: auto;
-    background-color: #042bc2 !important;
-    border: 1px solid #042bc2 !important;
+    background-color: #f3f4f6 !important;
+    border: 1px solid #d1d5db !important;
     border-radius: 6px !important;
-    padding: 4px 8px !important;
-    font-size: 12px !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
     font-weight: 600 !important;
-    color: white !important; /* Texte blanc */
+    color: #1f2937 !important;
     cursor: pointer;
+    height: 42px !important; /* Alignement sur la hauteur des boutons */
+    min-width: 100px;
+}
+
+.header-select-sm {
+    appearance: auto;
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+    padding: 2px 6px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    height: 28px !important; 
+    min-width: 85px;
+}
+
+/* Sélecteur et bouton d'impression (Preview) */
+.print-action-element {
+    height: 36px !important;
+    font-size: 12px !important;
+    border-radius: 6px !important;
+    border: 1px solid #d1d5db;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
 }
 
 main {
@@ -36,12 +60,13 @@ main {
 }
 
 /* Arrondis globaux pour un look moderne */
-button, input, select, textarea, .bg-white, #pdf-loader > div {
+button, input, select, textarea, .bg-white:not(#invoice-preview), #pdf-loader > div {
     border-radius: 8px !important;
 }
 
-* { 
-    /* Retrait de la suppression des arrondis */
+/* On s'assure que la facture reste à 90 degrés */
+#invoice-preview, #invoice-preview *, .pdf-export-mode, .pdf-export-80mm {
+    border-radius: 0 !important;
     transition: none !important; /* Désactiver les transitions aide la capture mobile */
 }
 
@@ -287,7 +312,9 @@ button, input, select, textarea, .bg-white, #pdf-loader > div {
 
 #invoice-preview th, #invoice-preview td {
     display: table-cell;
-    padding: 8px 6px;
+    padding: 10px 8px;
+    border: 1px solid #e5e7eb;
+    text-align: center;
 }
 
 /* Optimisation pour les petits écrans (ex: Itel A70) */
@@ -336,9 +363,15 @@ button, input, select, textarea, .bg-white, #pdf-loader > div {
     }
 
     .header-select {
-        padding: 4px 6px !important;
+        padding: 6px 8px !important;
         font-size: 10px !important;
-        max-width: 100px !important;
+        height: 30px !important;
+    }
+
+    .header-select-sm {
+        height: 22px !important;
+        font-size: 9px !important;
+        min-width: 70px !important;
     }
     
     header h1 {
@@ -459,9 +492,10 @@ button, input, select, textarea, .bg-white, #pdf-loader > div {
     /* ===== FACTURE PREVIEW MOBILE - ESPACES AUGMENTÉS ===== */
     #invoice-preview {
         font-size: 9px !important;
-        padding: 8px !important;
+        padding: 12px 8px !important;
         line-height: 1.3 !important;
         min-height: auto !important;
+        box-shadow: none !important;
     }
     
     #invoice-preview p {
@@ -533,39 +567,42 @@ button, input, select, textarea, .bg-white, #pdf-loader > div {
     width: 210mm !important; 
     min-height: 297mm !important;
     max-width: none !important;
-    padding: 14mm !important;
+    padding: 15mm !important; /* Bordure de 1,5 cm demandée */
     background: white !important;
-    font-size: 14px !important;
+    font-size: 13.4pt !important; /* Taille standard Word demandée */
     margin: 0 !important;
-    line-height: 1.6 !important;
+    line-height: 1.5 !important;
     box-sizing: border-box !important;
+    box-shadow: none !important;
+    border: none !important;
 }
 
 .pdf-export-mode p {
-    margin: 4px 0 !important;
-    line-height: 1.6 !important;
-    font-size: 14px !important;
+    margin: 6px 0 !important;
+    font-size: 13.4pt !important;
+    line-height: 1.4 !important;
 }
 
 .pdf-export-mode h1 {
-    font-size: 24px !important;
+    font-size: 15pt !important; /* Titre taille 15 demandée */
     margin: 8px 0 6px 0 !important;
     font-weight: 900 !important;
 }
 
 .pdf-export-mode h2 {
-    font-size: 18px !important;
+    font-size: 15pt !important; /* Titre taille 15 demandée */
     margin: 6px 0 4px 0 !important;
     font-weight: bold !important;
 }
 
 .pdf-export-mode h3 {
-    font-size: 16px !important;
+    font-size: 15pt !important;
     margin: 4px 0 3px 0 !important;
+    font-weight: 900 !important;
 }
 
 .pdf-export-mode table {
-    font-size: 14px !important;
+    font-size: 13.4pt !important;
     margin: 12px 0 !important;
     border-collapse: collapse !important;
     width: 100% !important;
@@ -587,26 +624,21 @@ button, input, select, textarea, .bg-white, #pdf-loader > div {
 
 .pdf-export-mode td, .pdf-export-mode th {
     display: table-cell !important;
-    padding: 12px 10px !important;
+    padding: 10px !important;
     line-height: 1.5 !important;
-    vertical-align: top !important;
+    vertical-align: middle !important;
+    text-align: center !important;
+    border: 1px solid #ccc !important;
     word-wrap: break-word !important;
-    white-space: normal !important;
-    font-size: 14px !important;
+}
+
+.pdf-export-mode td:first-child, .pdf-export-mode th:first-child {
+    text-align: left !important;
 }
 
 .pdf-export-mode th {
     font-weight: bold !important;
     color: white !important;
-    padding: 12px 10px !important;
-}
-
-.pdf-export-mode tr {
-    border-bottom: 1px solid #d0d0d0 !important;
-}
-
-.pdf-export-mode thead tr {
-    border-bottom: 2px solid #333 !important;
 }
 
 .pdf-export-mode .flex {
@@ -674,26 +706,99 @@ button, input, select, textarea, .bg-white, #pdf-loader > div {
     }
 }
 
-/* ===== PDF MOBILE - TABLE SPACING ===== */
-.pdf-export-mode {
-    table th:nth-child(1) {
-        width: 50% !important;
-    }
-    
-    table th:nth-child(2) {
-        width: 15% !important;
-    }
-    
-    table th:nth-child(3) {
-        width: 18% !important;
-    }
-    
-    table th:nth-child(4) {
-        width: 17% !important;
-    }
-    
-    table td:nth-child(1) {
-        word-wrap: break-word !important;
-        white-space: normal !important;
-    }
+/* ===== MODE TICKET DE CAISSE (80mm) ===== */
+.pdf-export-80mm {
+    width: 80mm !important;
+    min-height: auto !important;
+    max-width: none !important;
+    padding: 5mm !important;
+    background: white !important;
+    font-size: 10px !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.pdf-export-80mm *, .pdf-export-80mm p, .pdf-export-80mm h1, .pdf-export-80mm h2, .pdf-export-80mm span {
+    word-break: break-word !important;
+    white-space: normal !important;
+}
+
+.pdf-export-80mm h1 {
+    font-size: 14px !important;
+    margin: 4px 0 !important;
+}
+
+.pdf-export-80mm h2 {
+    font-size: 12px !important;
+    margin: 4px 0 !important;
+}
+
+.pdf-export-80mm .text-3xl {
+    font-size: 16px !important;
+    margin-bottom: 5px !important;
+}
+
+.pdf-export-80mm table {
+    font-size: 10px !important;
+    margin: 8px 0 !important;
+}
+
+.pdf-export-80mm td, .pdf-export-80mm th {
+    padding: 4px 1px !important;
+    border: 0.5px solid #ccc !important;
+}
+
+.pdf-export-80mm .flex {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+}
+
+.pdf-export-80mm #prev-logo-container {
+    text-align: center !important;
+    margin-bottom: 10px !important;
+}
+
+.pdf-export-80mm .w-3\/5, .pdf-export-80mm .w-2\/5 {
+    width: 100% !important;
+}
+
+.pdf-export-80mm .border-custom-blue {
+    border-bottom-width: 1px !important;
+    margin-bottom: 10px !important;
+    padding-bottom: 5px !important;
+}
+
+.pdf-export-80mm #prev-logo {
+    max-height: 40px !important;
+}
+
+/* ===== PDF EXPORT - TABLE COLUMN WIDTHS (Correction Syntaxe) ===== */
+.pdf-export-mode table th:nth-child(1),
+.pdf-export-mode table td:nth-child(1) {
+    width: 50% !important;
+    word-wrap: break-word !important;
+    white-space: normal !important;
+    text-align: left !important;
+}
+
+.pdf-export-mode table th:nth-child(2),
+.pdf-export-mode table td:nth-child(2) {
+    width: 15% !important;
+}
+
+.pdf-export-mode table th:nth-child(3),
+.pdf-export-mode table td:nth-child(3) {
+    width: 18% !important;
+}
+
+.pdf-export-mode table th:nth-child(4),
+.pdf-export-mode table td:nth-child(4) {
+    width: 17% !important;
 }

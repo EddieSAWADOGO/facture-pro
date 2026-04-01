@@ -89,7 +89,7 @@ function renderItems() {
                         <label class="text-xs font-bold text-gray-600 uppercase">Prix Unitaire (CFA)</label>
                         <input type="number" min="0" step="0.01" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm mt-1" value="${item.price}" oninput="updateItem(${index}, 'price', this.value)">
                     </div>
-                    <button onclick="removeItem(${index})" class="text-white bg-red-500 hover:bg-red-700 px-3 py-2 text-sm" title="Supprimer">
+                    <button onclick="removeItem(${index})" class="text-white bg-red-500 hover:bg-red-700 w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg shadow-sm transition-transform active:scale-90" title="Supprimer">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>
@@ -301,67 +301,87 @@ function changeColor() {
 async function downloadPDF() {
     const originalElement = document.getElementById('invoice-preview');
     const loader = document.getElementById('pdf-loader');
+    let format = document.getElementById('format-selector').value;
+    if (!format) format = 'a4'; // Par défaut si non sélectionné explicitement
     
     loader.classList.remove('hidden');
 
     // Création d'un clone invisible pour ne pas altérer l'affichage mobile
     const clone = originalElement.cloneNode(true);
-    clone.classList.add('pdf-export-mode');
+    
+    // Application de la classe selon le format choisi
+    if (format === '80mm') {
+        clone.classList.remove('pdf-export-mode'); // Sécurité
+        clone.classList.add('pdf-export-80mm');
+        clone.style.width = '80mm';
+    } else {
+        clone.classList.add('pdf-export-mode');
+    }
     
     // Style pour rendre le clone invisible mais capturable
     Object.assign(clone.style, {
         position: 'absolute',
         top: '-9999px',
         left: '0',
-        width: '210mm',
-        display: 'block',
-        visibility: 'visible'
+        display: 'block', 
+        visibility: 'visible',
+        boxShadow: 'none',
+        border: 'none',
+        backgroundColor: '#ffffff'
     });
+    
+    if (format !== '80mm') clone.style.width = '210mm';
     
     document.body.appendChild(clone);
 
     try {
-        // Utilisation d'un scale de 2 pour une qualité "Retina" même sur mobile
+        // Passage au scale 3 pour une qualité d'impression professionnelle (proche de 300 DPI)
         const canvas = await html2canvas(clone, {
-            scale: 2,
+            scale: 3,
             useCORS: true,
             allowTaint: true,
+            letterRendering: true, // Améliore la précision du placement des lettres
             backgroundColor: '#ffffff',
             logging: false,
-            windowWidth: 794 // Largeur A4 en pixels (96 DPI)
+            windowWidth: format === '80mm' ? 302 : 794 // 302px ~ 80mm à 96 DPI
         });
 
         const { jsPDF } = window.jspdf;
-        const imgData = canvas.toDataURL('image/jpeg', 0.95);
-        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgData = canvas.toDataURL('image/jpeg', 0.98); // Augmentation de la qualité JPEG
         
-        const imgWidth = 210;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        const pageHeight = 297;
-        
-        let heightLeft = imgHeight;
-        let position = 0;
+        if (format === '80mm') {
+            // Format Ticket : Une seule page longue et continue
+            const imgWidth = 80;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            const pdf = new jsPDF('p', 'mm', [80, imgHeight]);
+            pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+            
+            const filename = `Ticket_${document.getElementById('client-name').value || 'Client'}.pdf`;
+            pdf.save(filename);
+        } else {
+            // Format A4 : Gestion multi-pages standard
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgWidth = 210;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            const pageHeight = 297;
+            
+            let heightLeft = imgHeight;
+            let position = 0;
 
-        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-
-        while (heightLeft > 0) {
-            position = heightLeft - imgHeight;
-            pdf.addPage();
             pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
+
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+            
+            const now = new Date();
+            const timestamp = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}_${now.getHours()}h${now.getMinutes()}`;
+            pdf.save(`Facture_${document.getElementById('client-name').value || 'Client'}_${timestamp}.pdf`);
         }
-
-        // Génération du timestamp pour le nom du fichier
-        const now = new Date();
-        const day = String(now.getDate()).padStart(2, '0');
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const year = now.getFullYear();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const timestamp = `${day}-${month}-${year}_${hours}h${minutes}`;
-
-        pdf.save(`Facture_${document.getElementById('client-name').value || 'Client'}_${timestamp}.pdf`);
     } catch (err) {
         console.error('Erreur PDF:', err);
         alert('Une erreur est survenue lors de la génération.');

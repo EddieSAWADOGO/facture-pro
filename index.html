@@ -47,22 +47,16 @@
                 <i class="fa-solid fa-file-invoice mr-1 text-custom-blue"></i>Facture<span class="text-custom-blue">Pro</span>
             </h1>
             <div class="flex flex-row items-center gap-2 md:gap-4 overflow-x-auto">
-                <div class="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded hidden sm:flex">
-                    <i class="fa-solid fa-palette text-custom-blue text-[10px]"></i>
-                    <span class="text-[10px] font-bold text-blue-800 uppercase tracking-tighter">Style</span>
-                </div>
-                <div class="flex items-center gap-1 md:gap-2">
-                    <label for="font-selector" class="header-label">Police :</label>
-                    <select id="font-selector" class="header-select" onchange="changeFont()">
+                <div class="flex items-center gap-2">
+                    <select id="font-selector" class="header-select-sm !bg-blue-50" onchange="changeFont()">
+                        <option value="" disabled selected hidden>Police...</option>
                         <option value="font-sans">Standard</option>
                         <option value="font-serif">Serif Élégant</option>
                         <option value="font-mono">Monospace</option>
                         <option value="font-modern">Modern Géométrique</option>
                     </select>
-                </div>
-                <div class="flex items-center gap-1 md:gap-2">
-                    <label for="color-selector" class="header-label">Couleur :</label>
-                    <select id="color-selector" class="header-select" onchange="changeColor()">
+                    <select id="color-selector" class="header-select-sm !bg-blue-50" onchange="changeColor()">
+                        <option value="" disabled selected hidden>Thème...</option>
                         <option value="color-blue">Bleu Professionnel</option>
                         <option value="color-green">Vert Naturel</option>
                         <option value="color-red">Rouge Premium</option>
@@ -95,12 +89,12 @@
                     <input type="text" id="biller-phone" placeholder="Numéro de téléphone" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                     <input type="text" id="biller-address" placeholder="Siège social / Adresse" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                     <div class="grid grid-cols-2 gap-3">
-                        <div class="flex flex-col gap-1">
-                            <label class="text-[10px] font-bold text-gray-500 uppercase">Date Facture</label>
+                        <div class="flex flex-col justify-end gap-1">
+                            <label class="text-[11px] font-bold text-gray-400 uppercase leading-tight">Date Facture</label>
                             <input type="date" id="invoice-date" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updateInvoiceDate(); updatePreview()">
                         </div>
-                        <div class="flex flex-col gap-1">
-                            <label class="text-[10px] font-bold text-gray-500 uppercase">Échéance paiement</label>
+                        <div class="flex flex-col justify-end gap-1">
+                            <label class="text-[11px] font-bold text-gray-400 uppercase leading-tight">Échéance paiement</label>
                             <input type="date" id="invoice-due-date" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                         </div>
                     </div>
@@ -122,7 +116,7 @@
             <div class="bg-white p-5 border border-gray-200 shadow-sm">
                 <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
                     <h2 class="text-md font-bold uppercase tracking-wide text-custom-blue"><i class="fa-solid fa-boxes-stacked mr-2"></i>Détails de la prestation</h2>
-                    <button onclick="addItem()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1 text-sm border border-blue-200 font-medium transition-colors">
+                    <button onclick="addItem()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-2 h-7 text-[11px] border border-blue-200 font-bold transition-colors flex-shrink-0 whitespace-nowrap rounded">
                         <i class="fa-solid fa-plus mr-1"></i> Ajouter
                     </button>
                 </div>
@@ -146,7 +140,7 @@
                         <input type="text" id="custom-tax-name" placeholder="Nom (ex: TVA Custom)" class="border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm">
                         <input type="number" id="custom-tax-rate" placeholder="Taux (%)" step="0.1" class="border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm">
                     </div>
-                    <button onclick="addTax()" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 text-sm border border-blue-200 font-medium">
+                    <button onclick="addTax()" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 h-8 text-[11px] border border-blue-200 font-bold rounded">
                         <i class="fa-solid fa-plus mr-1"></i> Ajouter une Taxe
                     </button>
                     <div id="applied-taxes-container" class="space-y-2 bg-gray-50 p-2 border border-gray-100 min-h-[40px]">
@@ -158,17 +152,24 @@
 
         <section class="flex flex-col">
             <div class="sticky top-24">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-md font-bold uppercase tracking-wide"><i class="fa-solid fa-eye mr-2 text-gray-400"></i>Aperçu</h2>
-                    <button onclick="downloadPDF()" class="bg-custom-blue text-white px-5 py-2 hover-bg-custom-blue flex items-center font-bold text-sm tracking-wide shadow-md">
-                        <i class="fa-solid fa-download mr-2"></i> TÉLÉCHARGER PDF
-                    </button>
+                <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
+                    <h2 class="text-xs font-bold uppercase tracking-wide text-gray-400 hidden sm:block"><i class="fa-solid fa-eye mr-1"></i>Aperçu</h2>
+                    <div class="flex flex-row items-center gap-2 w-full sm:w-auto">
+                        <select id="format-selector" class="print-action-element flex-1 sm:flex-initial !bg-white !text-gray-800 !border-gray-300">
+                            <option value="" disabled selected hidden>Format d'impression</option>
+                            <option value="a4">Document A4 (Standard)</option>
+                            <option value="80mm">Ticket (80mm)</option>
+                        </select>
+                        <button onclick="downloadPDF()" class="bg-custom-blue text-white px-4 print-action-element hover-bg-custom-blue flex items-center justify-center font-bold text-xs tracking-wide shadow-md transition-all active:scale-95 whitespace-nowrap flex-1 sm:flex-initial">
+                            <i class="fa-solid fa-download mr-2 text-xs"></i> TÉLÉCHARGER
+                        </button>
+                    </div>
                 </div>
 
-                <div id="invoice-preview" class="bg-white p-8 border border-gray-300 shadow-sm font-sans color-blue text-sm min-h-[600px] flex flex-col justify-between">
+                <div id="invoice-preview" class="bg-white p-8 border border-gray-200 shadow-lg font-sans color-blue text-sm min-h-[600px] flex flex-col justify-between">
                     <div>
                         <div class="flex justify-between border-b-2 border-custom-blue pb-6 mb-8">
-                            <div>
+                            <div class="w-3/5">
                                 <div id="prev-logo-container" class="mb-4 hidden">
                                     <img id="prev-logo" src="" alt="Logo" class="max-h-16 object-contain">
                                 </div>
@@ -180,15 +181,15 @@
                                     <p><i class="fa-solid fa-location-dot mr-1 text-[9px]"></i> <span id="prev-biller-address">-</span></p>
                                 </div>
                             </div>
-                            <div class="text-right">
+                            <div class="text-right w-2/5">
                                 <h2 class="text-3xl font-light text-custom-blue uppercase mb-4">Facture</h2>
                                 <p class="text-gray-800 font-bold text-xs uppercase tracking-tighter">Émise le : <span id="prev-date" class="font-medium"></span></p>
                                 <p class="text-red-600 font-bold text-xs uppercase tracking-tighter mt-1" id="prev-due-date-row">Échéance : <span id="prev-due-date" class="font-medium"></span></p>
                             </div>
                         </div>
 
-                        <div class="mb-10 bg-blue-50/50 p-4 border-l-4 border-custom-blue w-2/3">
-                            <p class="text-blue-700 text-xs uppercase font-bold tracking-widest mb-3">Facturé à :</p>
+                        <div class="mb-10 w-full flex flex-col items-start">
+                            <p class="text-custom-blue text-xs uppercase font-bold tracking-widest mb-2">Facturé à :</p>
                             <h3 class="text-lg font-bold text-blue-900 mb-2" id="prev-client-name">Nom du client</h3>
                             <div class="mt-3 space-y-2">
                                 <p class="text-gray-600 font-medium"><i class="fa-solid fa-phone text-[10px] mr-1"></i> <span id="prev-client-phone">-</span></p>
