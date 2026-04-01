@@ -6,7 +6,7 @@ header {
     right: 0 !important;
     z-index: 1000 !important;
     background-color: white !important;
-    border-bottom: 2px solid #1e40af !important;
+    border-bottom: 2px solid #042bc2 !important;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
 }
 
@@ -21,23 +21,27 @@ header {
 
 .header-select {
     appearance: auto;
-    background-color: #1e3a8a !important; /* Bleu du footer */
-    border: 1px solid #1e3a8a !important;
-    border-radius: 4px !important; /* Légèrement arrondi */
+    background-color: #042bc2 !important;
+    border: 1px solid #042bc2 !important;
+    border-radius: 6px !important;
     padding: 4px 8px !important;
-    font-size: 11px !important;
+    font-size: 12px !important;
     font-weight: 600 !important;
     color: white !important; /* Texte blanc */
     cursor: pointer;
 }
 
 main {
-    margin-top:80px !important; /* Crée l'espace entre le header fixe et votre formulaire */
+    margin-top: 90px !important;
 }
 
-/* Forcer les angles droits partout */
+/* Arrondis globaux pour un look moderne */
+button, input, select, textarea, .bg-white, #pdf-loader > div {
+    border-radius: 8px !important;
+}
+
 * { 
-    border-radius: 0 !important; 
+    /* Retrait de la suppression des arrondis */
     transition: none !important; /* Désactiver les transitions aide la capture mobile */
 }
 
@@ -98,43 +102,43 @@ main {
 
 /* Bleu Professionnel */
 .color-blue {
-    --primary-color: #1e40af;
-    --dark-color: #1e3a8a;
+    --primary-color: #042bc2;
+    --dark-color: #032191;
     --light-color: #e0e7ff;
 }
 
 .color-blue h1, .color-blue h2 {
-    color: #1e40af !important;
+    color: #042bc2 !important;
 }
 
 .color-blue .border-b-2, .color-blue .border-t-4, .color-blue .border-l-4 {
-    border-color: #1e40af !important;
+    border-color: #042bc2 !important;
 }
 
 .color-blue thead tr {
-    background-color: #1e40af !important;
+    background-color: #042bc2 !important;
 }
 
 .color-blue .bg-blue-50 {
-    background-color: rgba(30, 64, 175, 0.1) !important;
+    background-color: rgba(4, 43, 194, 0.1) !important;
 }
 
 .color-blue .text-blue-700, .color-blue .text-blue-900 {
-    color: #1e40af !important;
+    color: #042bc2 !important;
 }
 
 /* Vert Naturel */
 .color-green {
-    --primary-color: #059669;
-    --dark-color: #047857;
-    --light-color: #d1fae5;
+    --primary-color: #042bc2; /* Harmonisation forcée par la requête principale */
+    --dark-color: #032191;
+    --light-color: #e0e7ff;
 }
 
 .color-green h1, .color-green h2 {
     color: #059669 !important;
 }
 
-.color-green .border-b-2, .color-green .border-t-4, .color-green .border-l-4 {
+.color-green .border-b-2, .color-green .border-t-4, .color-green .border-l-4, .color-green thead tr {
     border-color: #059669 !important;
 }
 
@@ -260,7 +264,7 @@ main {
 
 /* Scrollbar personnalisée */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-thumb { background: #1d4ed8; }
+::-webkit-scrollbar-thumb { background: #042bc2; }
 ::-webkit-scrollbar-track { background: #f1f5f9; }
 
 /* ===== TABLE RESPONSIVE ===== */
@@ -319,11 +323,11 @@ main {
     }
     
     body {
-        font-size: 13px !important;
+        font-size: 14px !important;
     }
     
     header {
-        padding: 8px 6px !important;
+        padding: 10px 8px !important;
         min-height: 45px !important;
     }
 
@@ -334,7 +338,7 @@ main {
     .header-select {
         padding: 4px 6px !important;
         font-size: 10px !important;
-        max-width: 90px !important; /* Évite que les selects ne poussent le titre hors écran */
+        max-width: 100px !important;
     }
     
     header h1 {
@@ -348,7 +352,7 @@ main {
     
     /* Tous les labels */
     label {
-        font-size: 13px !important;
+        font-size: 14px !important;
         margin: 0 !important;
         line-height: 1.2 !important;
     }
@@ -356,7 +360,7 @@ main {
     /* Tous les inputs, textareas, selects */
     input, select, textarea {
         font-size: 14px !important;
-        padding: 8px 6px !important;
+        padding: 10px 8px !important;
         margin: 0 !important;
     }
     
@@ -417,7 +421,7 @@ main {
     /* Tous les boutons */
     button {
         font-size: 13px !important;
-        padding: 7px 10px !important;
+        padding: 10px 12px !important;
         margin: 0 !important;
     }
     
@@ -444,14 +448,14 @@ main {
     
     /* Flex générique */
     .flex {
-        gap: 3px !important;
+        gap: 4px !important;
     }
     
     /* Sticky */
     .sticky {
         top: 0 !important;
     }
-    
+
     /* ===== FACTURE PREVIEW MOBILE - ESPACES AUGMENTÉS ===== */
     #invoice-preview {
         font-size: 9px !important;

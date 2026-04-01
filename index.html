@@ -10,6 +10,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Injection du nouveau bleu principal pour Tailwind */
+        .bg-custom-blue { background-color: #042bc2 !important; }
+        .text-custom-blue { color: #042bc2 !important; }
+        .border-custom-blue { border-color: #042bc2 !important; }
+        .hover-bg-custom-blue:hover { background-color: #032191 !important; }
+    </style>
 </head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-807HX0BLHK"></script>
@@ -24,24 +31,24 @@
 <body class="bg-gray-50 text-gray-900 font-sans flex flex-col min-h-screen">
 
     <!-- Loader PDF -->
-    <div id="pdf-loader" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+    <div id="pdf-loader" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-[9999]">
         <div class="bg-white p-8 rounded-lg shadow-xl text-center">
             <div class="animate-spin mb-4 inline-block">
-                <i class="fa-solid fa-spinner text-blue-700 text-4xl"></i>
+                <i class="fa-solid fa-spinner text-custom-blue text-4xl"></i>
             </div>
             <p class="text-gray-700 font-medium">Génération du PDF en cours...</p>
             <p class="text-gray-500 text-sm mt-2">Veuillez patienter</p>
         </div>
     </div>
 
-    <header class="bg-white border-b-2 border-blue-700 px-3 py-2 md:p-4 sticky top-0 z-50 shadow-sm">
+    <header class="bg-white border-b-2 border-custom-blue px-3 py-2 md:p-4 sticky top-0 z-50 shadow-sm">
         <div class="max-w-6xl mx-auto flex flex-row justify-between items-center gap-2">
             <h1 class="text-lg md:text-xl font-bold tracking-tight whitespace-nowrap">
-                <i class="fa-solid fa-file-invoice mr-1 text-blue-700"></i>Facture<span class="text-blue-700">Pro</span>
+                <i class="fa-solid fa-file-invoice mr-1 text-custom-blue"></i>Facture<span class="text-custom-blue">Pro</span>
             </h1>
             <div class="flex flex-row items-center gap-2 md:gap-4 overflow-x-auto">
                 <div class="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded hidden sm:flex">
-                    <i class="fa-solid fa-palette text-blue-700 text-[10px]"></i>
+                    <i class="fa-solid fa-palette text-custom-blue text-[10px]"></i>
                     <span class="text-[10px] font-bold text-blue-800 uppercase tracking-tighter">Style</span>
                 </div>
                 <div class="flex items-center gap-1 md:gap-2">
@@ -73,22 +80,29 @@
 
         <section class="space-y-6">
             <div class="bg-white p-5 border border-gray-200 shadow-sm">
-                <h2 class="text-md font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-blue-800"><i class="fa-solid fa-building mr-2"></i>Vos Informations</h2>
+                <h2 class="text-md font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-custom-blue"><i class="fa-solid fa-building mr-2"></i>Vos Informations</h2>
                 <div class="space-y-3">
                     <div class="flex flex-col gap-1">
                         <label class="text-xs font-bold text-gray-500 uppercase">Logo de l'entreprise</label>
-                        <input type="file" id="biller-logo-input" accept="image/*" class="text-sm file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" onchange="handleLogoUpload(event)">
+                        <input type="file" id="biller-logo-input" accept="image/*" class="text-sm file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-custom-blue hover:file:bg-blue-100 cursor-pointer" onchange="handleLogoUpload(event)">
                     </div>
                     <input type="text" id="biller-name" placeholder="Nom officiel de votre entreprise" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
-                    <input type="text" id="biller-phone" placeholder="Numéro de téléphone (ex: +226 00 00 00 00)" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
-                    <input type="text" id="biller-address" placeholder="Siège social / Adresse" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                     <div class="grid grid-cols-2 gap-3">
                         <input type="text" id="biller-rccm" placeholder="N° Registre de Commerce (RCCM)" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                         <input type="text" id="biller-ifu" placeholder="N° Identifiant Fiscal (IFU)" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                     </div>
-                    <div class="flex flex-col gap-1">
-                        <label class="text-xs font-bold text-gray-500 uppercase">Date de la facture</label>
-                        <input type="date" id="invoice-date" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updateInvoiceDate(); updatePreview()">
+                    <input type="email" id="biller-email" placeholder="Email de contact" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                    <input type="text" id="biller-phone" placeholder="Numéro de téléphone" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                    <input type="text" id="biller-address" placeholder="Siège social / Adresse" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase">Date Facture</label>
+                            <input type="date" id="invoice-date" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updateInvoiceDate(); updatePreview()">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase">Échéance paiement</label>
+                            <input type="date" id="invoice-due-date" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,7 +121,7 @@
 
             <div class="bg-white p-5 border border-gray-200 shadow-sm">
                 <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
-                    <h2 class="text-md font-bold uppercase tracking-wide text-blue-800"><i class="fa-solid fa-boxes-stacked mr-2"></i>Détails de la prestation</h2>
+                    <h2 class="text-md font-bold uppercase tracking-wide text-custom-blue"><i class="fa-solid fa-boxes-stacked mr-2"></i>Détails de la prestation</h2>
                     <button onclick="addItem()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1 text-sm border border-blue-200 font-medium transition-colors">
                         <i class="fa-solid fa-plus mr-1"></i> Ajouter
                     </button>
@@ -116,7 +130,7 @@
             </div>
 
             <div class="bg-white p-5 border border-gray-200 shadow-sm">
-                <h2 class="text-md font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-blue-800"><i class="fa-solid fa-percent mr-2"></i>Gestion des Taxes</h2>
+                <h2 class="text-md font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-custom-blue"><i class="fa-solid fa-percent mr-2"></i>Gestion des Taxes</h2>
                 <div class="space-y-3">
                     <div class="flex flex-col gap-1">
                         <label class="text-xs font-bold text-gray-500 uppercase">Taxes Prédéfinies (Burkina Faso) ou Personnalisées</label>
@@ -146,33 +160,34 @@
             <div class="sticky top-24">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-md font-bold uppercase tracking-wide"><i class="fa-solid fa-eye mr-2 text-gray-400"></i>Aperçu</h2>
-                    <button onclick="downloadPDF()" class="bg-blue-700 text-white px-5 py-2 hover:bg-blue-800 flex items-center font-bold text-sm tracking-wide shadow-md">
+                    <button onclick="downloadPDF()" class="bg-custom-blue text-white px-5 py-2 hover-bg-custom-blue flex items-center font-bold text-sm tracking-wide shadow-md">
                         <i class="fa-solid fa-download mr-2"></i> TÉLÉCHARGER PDF
                     </button>
                 </div>
 
                 <div id="invoice-preview" class="bg-white p-8 border border-gray-300 shadow-sm font-sans color-blue text-sm min-h-[600px] flex flex-col justify-between">
                     <div>
-                        <div class="flex justify-between border-b-2 border-blue-700 pb-6 mb-8">
+                        <div class="flex justify-between border-b-2 border-custom-blue pb-6 mb-8">
                             <div>
                                 <div id="prev-logo-container" class="mb-4 hidden">
                                     <img id="prev-logo" src="" alt="Logo" class="max-h-16 object-contain">
                                 </div>
-                                <h1 class="text-2xl font-black tracking-tight text-blue-900 mb-2" id="prev-biller-name">NOM DE LA STRUCTURE</h1>
-                                <div class="mt-3 space-y-1">
-                                    <p class="text-gray-600 font-medium"><i class="fa-solid fa-phone text-[10px] mr-1"></i> <span id="prev-biller-phone">-</span></p>
-                                    <p class="text-gray-600 font-medium"><i class="fa-solid fa-location-dot text-[10px] mr-1"></i> <span id="prev-biller-address">-</span></p>
-                                    <p class="text-gray-600 font-medium">RCCM : <span id="prev-biller-rccm">-</span></p>
-                                    <p class="text-gray-600 font-medium">IFU : <span id="prev-biller-ifu">-</span></p>
+                                <h1 class="text-xl font-black tracking-tight text-blue-900 mb-3" id="prev-biller-name">NOM DE LA STRUCTURE</h1>
+                                <div class="space-y-1 text-gray-600 text-xs">
+                                    <p class="font-bold">RCCM : <span id="prev-biller-rccm" class="text-black">-</span> | IFU : <span id="prev-biller-ifu" class="text-black">-</span></p>
+                                    <p><i class="fa-solid fa-envelope mr-1 text-[9px]"></i> <span id="prev-biller-email">-</span></p>
+                                    <p><i class="fa-solid fa-phone mr-1 text-[9px]"></i> <span id="prev-biller-phone">-</span></p>
+                                    <p><i class="fa-solid fa-location-dot mr-1 text-[9px]"></i> <span id="prev-biller-address">-</span></p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <h2 class="text-3xl font-light text-blue-700 uppercase">Facture</h2>
-                                <p class="mt-2 text-gray-800 font-bold">Date : <span id="prev-date"></span></p>
+                                <h2 class="text-3xl font-light text-custom-blue uppercase mb-4">Facture</h2>
+                                <p class="text-gray-800 font-bold text-xs uppercase tracking-tighter">Émise le : <span id="prev-date" class="font-medium"></span></p>
+                                <p class="text-red-600 font-bold text-xs uppercase tracking-tighter mt-1" id="prev-due-date-row">Échéance : <span id="prev-due-date" class="font-medium"></span></p>
                             </div>
                         </div>
 
-                        <div class="mb-10 bg-blue-50/50 p-4 border-l-4 border-blue-700 w-2/3">
+                        <div class="mb-10 bg-blue-50/50 p-4 border-l-4 border-custom-blue w-2/3">
                             <p class="text-blue-700 text-xs uppercase font-bold tracking-widest mb-3">Facturé à :</p>
                             <h3 class="text-lg font-bold text-blue-900 mb-2" id="prev-client-name">Nom du client</h3>
                             <div class="mt-3 space-y-2">
@@ -184,7 +199,7 @@
 
                         <table class="w-full text-left border-collapse mb-8">
                             <thead>
-                                <tr class="bg-blue-700 text-white">
+                                <tr class="bg-custom-blue text-white">
                                     <th class="py-3 px-4 font-bold text-xs uppercase tracking-wider w-1/2">Description</th>
                                     <th class="py-3 px-4 font-bold text-xs uppercase tracking-wider text-center">Qté</th>
                                     <th class="py-3 px-4 font-bold text-xs uppercase tracking-wider text-right">Prix Unitaire</th>
@@ -206,7 +221,7 @@
                                     <span id="prev-tva" class="font-bold">0 CFA</span>
                                 </div>
                                 <div id="prev-taxes-container" class="space-y-1"></div>
-                                <div class="flex justify-between py-3 mt-2 border-t-4 border-blue-700 text-xl font-black text-blue-900">
+                                <div class="flex justify-between py-3 mt-2 border-t-4 border-custom-blue text-xl font-black text-blue-900">
                                     <span>TOTAL NET</span>
                                     <span id="prev-total">0 CFA</span>
                                 </div>
@@ -223,7 +238,7 @@
 
     </main>
 
-    <footer class="bg-blue-900 text-white py-12 mt-12">
+    <footer class="bg-custom-blue text-white py-12 mt-12">
         <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-10 text-sm">
             <div>
                 <h3 class="font-bold text-xl uppercase tracking-widest text-white mb-4">FacturePro</h3>

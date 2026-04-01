@@ -218,10 +218,16 @@ function updatePreview() {
     // Vos Infos
     document.getElementById('prev-biller-name').textContent = document.getElementById('biller-name').value || 'NOM DE VOTRE STRUCTURE';
     document.getElementById('prev-biller-phone').textContent = document.getElementById('biller-phone').value || 'Téléphone non spécifié';
+    document.getElementById('prev-biller-email').textContent = document.getElementById('biller-email').value || 'email@exemple.com';
     document.getElementById('prev-biller-address').textContent = document.getElementById('biller-address').value || '-';
     document.getElementById('prev-biller-rccm').textContent = document.getElementById('biller-rccm').value || '-';
     document.getElementById('prev-biller-ifu').textContent = document.getElementById('biller-ifu').value || '-';
     
+    // Dates
+    const dueDate = document.getElementById('invoice-due-date').value;
+    const prevDueDate = document.getElementById('prev-due-date');
+    prevDueDate.textContent = dueDate ? formatDateToFrench(dueDate) : 'Non définie';
+
     // Client
     document.getElementById('prev-client-name').textContent = document.getElementById('client-name').value || 'NOM DU CLIENT';
     document.getElementById('prev-client-phone').textContent = document.getElementById('client-phone').value || '-';
