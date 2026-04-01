@@ -74,10 +74,10 @@
 
         <section class="space-y-6">
             <div class="bg-white p-5 border border-gray-200 shadow-sm">
-                <h2 class="text-md font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-custom-blue"><i class="fa-solid fa-building mr-2"></i>Vos Informations</h2>
+                <h2 class="text-[15px] font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-custom-blue"><i class="fa-solid fa-building mr-2"></i>Vos Informations</h2>
                 <div class="space-y-3">
                     <div class="flex flex-col gap-1">
-                        <label class="text-xs font-bold text-gray-500 uppercase">Logo de l'entreprise</label>
+                        <label class="text-sm font-bold text-gray-500 uppercase">Logo de l'entreprise</label>
                         <input type="file" id="biller-logo-input" accept="image/*" class="text-sm file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-custom-blue hover:file:bg-blue-100 cursor-pointer" onchange="handleLogoUpload(event)">
                     </div>
                     <input type="text" id="biller-name" placeholder="Nom officiel de votre entreprise" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
@@ -90,11 +90,11 @@
                     <input type="text" id="biller-address" placeholder="Siège social / Adresse" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                     <div class="grid grid-cols-2 gap-3">
                         <div class="flex flex-col justify-end gap-1">
-                            <label class="text-[11px] font-bold text-gray-400 uppercase leading-tight">Date Facture</label>
+                            <label class="text-sm font-bold text-gray-400 uppercase leading-tight">Date Facture</label>
                             <input type="date" id="invoice-date" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updateInvoiceDate(); updatePreview()">
                         </div>
                         <div class="flex flex-col justify-end gap-1">
-                            <label class="text-[11px] font-bold text-gray-400 uppercase leading-tight">Échéance paiement</label>
+                            <label class="text-sm font-bold text-gray-400 uppercase leading-tight">Échéance paiement</label>
                             <input type="date" id="invoice-due-date" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                         </div>
                     </div>
@@ -102,7 +102,7 @@
             </div>
 
             <div class="bg-white p-5 border border-gray-200 shadow-sm">
-                <h2 class="text-md font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-blue-800"><i class="fa-solid fa-user-tie mr-2"></i>Informations du Client</h2>
+                <h2 class="text-[15px] font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-blue-800"><i class="fa-solid fa-user-tie mr-2"></i>Informations du Client</h2>
                 <div class="space-y-3">
                     <input type="text" id="client-name" placeholder="Nom complet ou Raison sociale du client" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                     <input type="text" id="client-phone" placeholder="Numéro de téléphone du client" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
@@ -115,19 +115,19 @@
 
             <div class="bg-white p-5 border border-gray-200 shadow-sm">
                 <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
-                    <h2 class="text-md font-bold uppercase tracking-wide text-custom-blue"><i class="fa-solid fa-boxes-stacked mr-2"></i>Détails de la prestation</h2>
-                    <button onclick="addItem()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-2 h-7 text-[11px] border border-blue-200 font-bold transition-colors flex-shrink-0 whitespace-nowrap rounded">
-                        <i class="fa-solid fa-plus mr-1"></i> Ajouter
+                    <h2 class="text-[15px] font-bold uppercase tracking-wide text-custom-blue"><i class="fa-solid fa-boxes-stacked mr-2"></i>Prestations</h2>
+                    <button onclick="addItem()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 h-8 text-sm border border-blue-200 font-bold transition-colors flex-shrink-0 whitespace-nowrap rounded flex items-center gap-2">
+                        <i class="fa-solid fa-plus text-xs"></i> Ajouter
                     </button>
                 </div>
                 <div id="items-container" class="space-y-3"></div>
             </div>
 
             <div class="bg-white p-5 border border-gray-200 shadow-sm">
-                <h2 class="text-md font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-custom-blue"><i class="fa-solid fa-percent mr-2"></i>Gestion des Taxes</h2>
+                <h2 class="text-[15px] font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-custom-blue"><i class="fa-solid fa-percent mr-2"></i>Gestion des Taxes</h2>
                 <div class="space-y-3">
                     <div class="flex flex-col gap-1">
-                        <label class="text-xs font-bold text-gray-500 uppercase">Taxes Prédéfinies (Burkina Faso) ou Personnalisées</label>
+                        <label class="text-sm font-bold text-gray-500 uppercase">Taxes Prédéfinies ou Personnalisées</label>
                         <select id="tax-preset-selector" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm">
                             <option value="0">TVA (18%)</option>
                             <option value="1">TVA (5.5%)</option>
@@ -140,8 +140,8 @@
                         <input type="text" id="custom-tax-name" placeholder="Nom (ex: TVA Custom)" class="border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm">
                         <input type="number" id="custom-tax-rate" placeholder="Taux (%)" step="0.1" class="border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm">
                     </div>
-                    <button onclick="addTax()" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 h-8 text-[11px] border border-blue-200 font-bold rounded">
-                        <i class="fa-solid fa-plus mr-1"></i> Ajouter une Taxe
+                    <button onclick="addTax()" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 h-9 text-sm border border-blue-200 font-bold rounded flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus text-xs"></i> Ajouter une Taxe
                     </button>
                     <div id="applied-taxes-container" class="space-y-2 bg-gray-50 p-2 border border-gray-100 min-h-[40px]">
                         <p class="text-gray-500 text-sm">Aucune taxe ajoutée.</p>
