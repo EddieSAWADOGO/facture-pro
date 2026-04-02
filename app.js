@@ -1,5 +1,164 @@
 // État de l'application
-let items = [ { desc: '', qty: 1, price: 0 } ];
+let items = [{ desc: '', qty: 1, price: 0 }];
+let currentLanguage = 'fr';
+let currentCurrency = { code: 'XOF', symbol: 'CFA', name: 'Francs CFA', locale: 'fr-FR' };
+let currentFont = 'font-sans';
+let currentColor = 'color-blue';
+
+const currencies = [
+    { code: 'XOF', symbol: 'CFA', name: 'Francs CFA', locale: 'fr-FR' },
+    { code: 'EUR', symbol: '€', name: 'Euros', locale: 'fr-FR' },
+    { code: 'USD', symbol: '$', name: 'Dollars', locale: 'en-US' },
+    { code: 'NGN', symbol: '₦', name: 'Naira', locale: 'en-NG' },
+    { code: 'GHS', symbol: 'GH₵', name: 'Cedis', locale: 'en-GH' },
+    { code: 'XAF', symbol: 'FCFA', name: 'Francs CFA (BEAC)', locale: 'fr-CM' },
+    { code: 'CNY', symbol: '¥', name: 'Yuan', locale: 'zh-CN' },
+    { code: 'ZAR', symbol: 'R', name: 'Rand', locale: 'en-ZA' },
+    { code: 'MAD', symbol: 'DH', name: 'Dirham Marocain', locale: 'ar-MA' },
+    { code: 'GBP', symbol: '£', name: 'Pounds', locale: 'en-GB' },
+    { code: 'CAD', symbol: 'CA$', name: 'Dollars Canadiens', locale: 'en-CA' }
+];
+
+const translations = {
+    fr: {
+        title_biller: "Vos Informations",
+        label_logo: "Logo de l'entreprise",
+        ph_biller_name: "Nom officiel de votre entreprise",
+        ph_rccm: "N° Registre de Commerce (RCCM)",
+        ph_ifu: "N° Identifiant Fiscal (IFU)",
+        ph_email: "Email de contact",
+        ph_phone: "Numéro de téléphone",
+        ph_address: "Siège social / Adresse",
+        label_address: "Adresse",
+        label_phone: "Téléphone",
+        label_email: "Email",
+        label_logo_btn: "Choisir un logo",
+        label_no_file: "Aucun fichier choisi",
+        label_date_invoice: "Date Facture",
+        label_due_date: "Échéance paiement",
+        title_client: "Informations du Client",
+        ph_client_name: "Nom ou Raison sociale du client",
+        ph_client_name_preview: "NOM DU CLIENT",
+        ph_biller_name_preview: "NOM DE VOTRE STRUCTURE",
+        label_not_specified: "Non spécifié",
+        label_desc_none: "Sans description",
+        ph_client_phone: "Téléphone du client",
+        ph_rccm_opt: "RCCM Client (Optionnel)",
+        ph_ifu_opt: "IFU Client (Optionnel)",
+        title_items: "Prestations",
+        label_desc: "Désignation",
+        label_qty: "Qté",
+        label_price: "P. Unit.",
+        ph_item_name: "Nom du produit ou service",
+        btn_add: "Ajouter",
+        title_taxes: "Gestion des Taxes",
+        label_tax_preset: "Taxes Prédéfinies",
+        ph_tax_name: "Nom (ex: TVA)",
+        ph_tax_rate: "Taux (%)",
+        btn_add_tax: "Ajouter une Taxe",
+        no_tax: "Aucune taxe ajoutée.",
+        title_preview: "Aperçu",
+        btn_download: "Télécharger la facture",
+        invoice_title: "FACTURE",
+        label_issue_date: "Date d'émission :",
+        label_expiry: "Échéance :",
+        label_dest: "DESTINATAIRE",
+        th_desc: "Désignation",
+        th_qty: "Qté",
+        th_price: "P. Unit.",
+        th_total: "Montant",
+        label_subtotal: "Sous-total",
+        label_net_total: "TOTAL NET",
+        label_sum_words: "Arrêtée la présente facture à la somme de :",
+        theme_blue: "Bleu Pro",
+        theme_indigo: "Indigo Royal",
+        theme_green: "Vert Émeraude",
+        theme_teal: "Turquoise",
+        theme_purple: "Violet Moderne",
+        theme_orange: "Orange Énergie",
+        theme_slate: "Gris Anthracite",
+        theme_pink: "Rose Business",
+        theme_amber: "Ambre Chaud",
+        theme_cyan: "Cyan Arctique",
+        theme_lime: "Citron Vert",
+        theme_dark: "Noir Intense",
+        footer_quote: "\"L'excellence dans votre facturation reflète le sérieux de votre expertise.\"",
+        footer_help: "Besoin d'un logiciel de gestion complet ?",
+        footer_support: "Support & Expertise",
+        footer_whatsapp: "Contact Direct WhatsApp",
+        footer_social: "Nos Réseaux Sociaux",
+        msg_loading_pdf: "Génération du PDF en cours..."
+    },
+    en: {
+        title_biller: "Your Information",
+        label_logo: "Company Logo",
+        ph_biller_name: "Your official company name",
+        ph_rccm: "Business Reg Number (RCCM)",
+        ph_ifu: "Tax ID Number (IFU)",
+        ph_email: "Contact Email",
+        ph_phone: "Phone Number",
+        ph_address: "Headquarters / Address",
+        label_address: "Address",
+        label_phone: "Phone",
+        label_email: "Email",
+        label_logo_btn: "Choose a logo",
+        label_no_file: "No file chosen",
+        label_date_invoice: "Invoice Date",
+        label_due_date: "Due Date",
+        title_client: "Client Information",
+        ph_client_name: "Client Name or Company",
+        ph_client_name_preview: "CLIENT NAME",
+        ph_biller_name_preview: "YOUR COMPANY NAME",
+        label_not_specified: "Not specified",
+        label_desc_none: "No description",
+        ph_client_phone: "Client Phone Number",
+        ph_rccm_opt: "Client RCCM (Optional)",
+        ph_ifu_opt: "Client IFU (Optional)",
+        title_items: "Services/Items",
+        label_desc: "Description",
+        label_qty: "Qty",
+        label_price: "Unit Price",
+        ph_item_name: "Product or service name",
+        btn_add: "Add Item",
+        title_taxes: "Tax Management",
+        label_tax_preset: "Predefined Taxes",
+        ph_tax_name: "Name (e.g. VAT)",
+        ph_tax_rate: "Rate (%)",
+        btn_add_tax: "Add Tax",
+        no_tax: "No taxes added.",
+        title_preview: "Preview",
+        btn_download: "Download Invoice",
+        invoice_title: "INVOICE",
+        label_issue_date: "Issue Date:",
+        label_expiry: "Due Date:",
+        label_dest: "BILL TO",
+        th_desc: "Description",
+        th_qty: "Qty",
+        th_price: "Unit Price",
+        th_total: "Amount",
+        label_subtotal: "Subtotal",
+        label_net_total: "NET TOTAL",
+        label_sum_words: "This invoice is settled at the total amount of:",
+        theme_blue: "Pro Blue",
+        theme_indigo: "Royal Indigo",
+        theme_green: "Emerald Green",
+        theme_teal: "Teal",
+        theme_purple: "Modern Purple",
+        theme_orange: "Energy Orange",
+        theme_slate: "Slate Grey",
+        theme_pink: "Business Pink",
+        theme_amber: "Warm Amber",
+        theme_cyan: "Arctic Cyan",
+        theme_lime: "Lime Green",
+        theme_dark: "Deep Black",
+        footer_quote: "\"Excellence in your invoicing reflects the quality of your expertise.\"",
+        footer_help: "Need a complete management software?",
+        footer_support: "Support & Expertise",
+        footer_whatsapp: "Direct WhatsApp Contact",
+        footer_social: "Our Social Networks",
+        msg_loading_pdf: "Generating PDF..."
+    }
+};
 
 // Taxes du Burkina Faso
 const burkinaTaxes = [
@@ -13,29 +172,99 @@ const burkinaTaxes = [
 // Taxes appliquées
 let appliedTaxes = [];
 
-function formatDateToFrench(dateStr) {
+function formatDateByLang(dateStr) {
+    if(!dateStr) return '-';
     const date = new Date(dateStr + 'T00:00:00');
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('fr-FR', options);
+    return date.toLocaleDateString(currentLanguage === 'fr' ? 'fr-FR' : 'en-US', options);
 }
 
 function updateInvoiceDate() {
     const dateInput = document.getElementById('invoice-date');
     const prevDate = document.getElementById('prev-date');
     if (dateInput.value) {
-        prevDate.textContent = formatDateToFrench(dateInput.value);
+        prevDate.textContent = formatDateByLang(dateInput.value);
     }
 }
 
 function init() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    document.getElementById('invoice-date').value = `${year}-${month}-${day}`;
+    // Charger les préférences
+    const prefs = JSON.parse(localStorage.getItem('facturePro_prefs')) || {};
+    currentLanguage = prefs.lang || 'fr';
+    currentColor = prefs.color || 'color-blue';
+    currentFont = prefs.font || 'font-sans';
+    const savedCurrency = currencies.find(c => c.code === (prefs.currencyCode || 'XOF'));
+    if(savedCurrency) currentCurrency = savedCurrency;
+
+    // Remplir les sélecteurs
+    populateCurrencySelector();
+    document.getElementById('lang-selector').value = currentLanguage;
+    document.getElementById('font-selector').value = currentFont;
+    document.getElementById('color-selector').value = currentColor;
+
+    // Appliquer les styles initiaux
+    changeFont(currentFont);
+    changeColor(currentColor);
+
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('invoice-date').value = today;
     
     loadBillerInfo();
-    updateInvoiceDate();
+    applyTranslations();
+    populateTaxDropdown();
+    renderItems();
+    updatePreview();
+}
+
+function toggleMobileMenu() {
+    const menu = document.getElementById('nav-menu');
+    menu.classList.toggle('hidden');
+}
+
+function changeLanguage(lang) {
+    currentLanguage = lang;
+    savePreferences();
+    applyTranslations();
+    updatePreview();
+}
+
+function populateCurrencySelector() {
+    const sel = document.getElementById('currency-selector');
+    sel.innerHTML = currencies.map(c => `<option value="${c.code}">${c.code} (${c.symbol})</option>`).join('');
+    sel.value = currentCurrency.code;
+}
+
+function changeCurrency(code) {
+    currentCurrency = currencies.find(c => c.code === code);
+    savePreferences();
+    updatePreview();
+}
+
+function savePreferences() {
+    const prefs = {
+        lang: currentLanguage,
+        currencyCode: currentCurrency.code,
+        font: currentFont,
+        color: currentColor
+    };
+    localStorage.setItem('facturePro_prefs', JSON.stringify(prefs));
+}
+
+function applyTranslations() {
+    const dict = translations[currentLanguage];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+            // Préserver l'icône si elle existe
+            const icon = el.querySelector('i');
+            el.textContent = dict[key];
+            if (icon) el.prepend(icon, " ");
+        }
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (dict[key]) el.placeholder = dict[key];
+    });
     populateTaxDropdown();
     renderItems();
     updatePreview();
@@ -60,7 +289,9 @@ function updateItem(index, field, value) {
 
 function handleLogoUpload(event) {
     const file = event.target.files[0];
+    const fileNameDisplay = document.getElementById('file-name-display');
     if (file) {
+        fileNameDisplay.textContent = file.name;
         const reader = new FileReader();
         reader.onload = function(e) {
             const logoPrev = document.getElementById('prev-logo');
@@ -105,20 +336,22 @@ function loadBillerInfo() {
 function renderItems() {
     const container = document.getElementById('items-container');
     container.innerHTML = '';
+    const dict = translations[currentLanguage];
+    
     items.forEach((item, index) => {
         container.innerHTML += `
             <div class="bg-blue-50/30 p-3 border border-blue-100">
                 <div class="mb-2">
-                    <label class="text-xs font-bold text-gray-600 uppercase">Désignation</label>
-                    <input type="text" placeholder="Nom du produit ou service" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm mt-1" value="${item.desc}" oninput="updateItem(${index}, 'desc', this.value)">
+                    <label class="text-xs font-bold text-gray-600 uppercase">${dict.label_desc}</label>
+                    <input type="text" placeholder="${dict.ph_item_name}" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm mt-1" value="${item.desc}" oninput="updateItem(${index}, 'desc', this.value)">
                 </div>
                 <div class="flex gap-3 items-end">
                     <div>
-                        <label class="text-xs font-bold text-gray-600 uppercase">Quantité</label>
+                        <label class="text-xs font-bold text-gray-600 uppercase">${dict.label_qty}</label>
                         <input type="number" min="1" class="w-20 border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm font-bold mt-1" value="${item.qty}" oninput="updateItem(${index}, 'qty', this.value)">
                     </div>
                     <div class="flex-grow">
-                        <label class="text-xs font-bold text-gray-600 uppercase">Prix Unitaire (CFA)</label>
+                        <label class="text-xs font-bold text-gray-600 uppercase">${dict.label_price} (${currentCurrency.code})</label>
                         <input type="number" min="0" step="0.01" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm mt-1" value="${item.price}" oninput="updateItem(${index}, 'price', this.value)">
                     </div>
                     <button onclick="removeItem(${index})" class="text-white bg-red-500 hover:bg-red-700 w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg shadow-sm transition-transform active:scale-90" title="Supprimer">
@@ -133,7 +366,10 @@ function renderItems() {
 function populateTaxDropdown() {
     const dropdown = document.getElementById('tax-preset-selector');
     dropdown.innerHTML = '';
-    burkinaTaxes.forEach((tax, index) => {
+    const taxList = [...burkinaTaxes];
+    if(currentLanguage === 'en') taxList[2].name = "Housing Tax";
+    
+    taxList.forEach((tax, index) => {
         const option = document.createElement('option');
         option.value = index;
         option.textContent = tax.name + (tax.custom ? '' : ` - ${tax.rate}%`);
@@ -199,9 +435,11 @@ function renderAppliedTaxes() {
 
 function updatePreview() {
     saveBillerInfo();
+    const dict = translations[currentLanguage];
+
     // Vos Infos
-    document.getElementById('prev-biller-name').textContent = document.getElementById('biller-name').value || 'NOM DE VOTRE STRUCTURE';
-    document.getElementById('prev-biller-phone').textContent = document.getElementById('biller-phone').value || 'Téléphone non spécifié';
+    document.getElementById('prev-biller-name').textContent = document.getElementById('biller-name').value || dict.ph_biller_name_preview;
+    document.getElementById('prev-biller-phone').textContent = document.getElementById('biller-phone').value || dict.label_not_specified;
     document.getElementById('prev-biller-email').textContent = document.getElementById('biller-email').value || 'email@exemple.com';
     document.getElementById('prev-biller-address').textContent = document.getElementById('biller-address').value || '-';
     document.getElementById('prev-biller-rccm').textContent = document.getElementById('biller-rccm').value || '-';
@@ -210,10 +448,10 @@ function updatePreview() {
     // Dates
     const dueDate = document.getElementById('invoice-due-date').value;
     const prevDueDate = document.getElementById('prev-due-date');
-    prevDueDate.textContent = dueDate ? formatDateToFrench(dueDate) : 'Non définie';
+    prevDueDate.textContent = dueDate ? formatDateByLang(dueDate) : dict.label_not_specified;
 
     // Client
-    document.getElementById('prev-client-name').textContent = document.getElementById('client-name').value || 'NOM DU CLIENT';
+    document.getElementById('prev-client-name').textContent = document.getElementById('client-name').value || dict.ph_client_name_preview;
     document.getElementById('prev-client-phone').textContent = document.getElementById('client-phone').value || '-';
     document.getElementById('prev-client-rccm').textContent = document.getElementById('client-rccm').value || '-';
     document.getElementById('prev-client-ifu').textContent = document.getElementById('client-ifu').value || '-';
@@ -221,6 +459,7 @@ function updatePreview() {
     const tbody = document.getElementById('prev-items-body');
     tbody.innerHTML = '';
     let subtotal = 0;
+    const locale = currentCurrency.locale;
 
     items.forEach(item => {
         const price = parseFloat(item.price) || 0;
@@ -230,10 +469,10 @@ function updatePreview() {
         
         tbody.innerHTML += `
             <tr class="border-b border-gray-100">
-                <td class="py-3 px-4 text-gray-800">${item.desc || 'Sans description'}</td>
+                <td class="py-3 px-4 text-gray-800">${item.desc || dict.label_desc_none}</td>
                 <td class="py-3 px-4 text-center text-gray-800">${qty}</td>
-                <td class="py-3 px-4 text-right text-gray-800">${price.toLocaleString('fr-FR')}</td>
-                <td class="py-3 px-4 text-right text-blue-900 font-bold">${totalLine.toLocaleString('fr-FR')}</td>
+                <td class="py-3 px-4 text-right text-gray-800">${price.toLocaleString(locale)}</td>
+                <td class="py-3 px-4 text-right text-blue-900 font-bold">${totalLine.toLocaleString(locale)}</td>
             </tr>
         `;
     });
@@ -245,7 +484,7 @@ function updatePreview() {
     });
     const total = Math.round((subtotal + taxesAmount) * 100) / 100;
 
-    document.getElementById('prev-subtotal').textContent = subtotal.toLocaleString('fr-FR') + ' CFA';
+    document.getElementById('prev-subtotal').textContent = subtotal.toLocaleString(locale) + ' ' + currentCurrency.symbol;
     
     // Afficher les taxes appliquées
     const taxesContainer = document.getElementById('prev-taxes-container');
@@ -255,32 +494,34 @@ function updatePreview() {
         taxesContainer.innerHTML += `
             <div class="flex justify-between py-1 border-b border-gray-100">
                 <span class="text-gray-600 font-medium">${tax.name}</span>
-                <span class="font-bold">${taxAmount.toLocaleString('fr-FR')} CFA</span>
+                <span class="font-bold">${taxAmount.toLocaleString(locale)} ${currentCurrency.symbol}</span>
             </div>
         `;
     });
     
-    document.getElementById('prev-total').textContent = total.toLocaleString('fr-FR') + ' CFA';
+    document.getElementById('prev-total').textContent = total.toLocaleString(locale) + ' ' + currentCurrency.symbol;
     
     // Afficher le montant en lettres
     const totalRounded = Math.round(total);
-    const totalWords = numberToWords(totalRounded) + ' francs CFA';
+    const totalWords = numberToWords(totalRounded, currentLanguage) + ' ' + (currentLanguage === 'fr' ? currentCurrency.name : currentCurrency.code);
     const totalCapitalized = totalWords.charAt(0).toUpperCase() + totalWords.slice(1);
     document.getElementById('prev-total-words').textContent = totalCapitalized;
 }
 
-function changeFont() {
-    const selector = document.getElementById('font-selector');
+function changeFont(fontClass) {
+    currentFont = fontClass;
     const preview = document.getElementById('invoice-preview');
-    preview.classList.remove('font-sans', 'font-serif', 'font-mono', 'font-modern');
-    preview.classList.add(selector.value);
+    preview.classList.remove('font-sans', 'font-serif', 'font-mono', 'font-modern', 'font-playfair');
+    preview.classList.add(fontClass);
+    savePreferences();
 }
 
-function changeColor() {
-    const selector = document.getElementById('color-selector');
+function changeColor(colorClass) {
+    currentColor = colorClass;
     const preview = document.getElementById('invoice-preview');
-    preview.classList.remove('color-blue', 'color-green', 'color-red', 'color-orange', 'color-purple', 'color-teal');
-    preview.classList.add(selector.value);
+    preview.classList.remove('color-blue', 'color-indigo', 'color-green', 'color-teal', 'color-purple', 'color-orange', 'color-slate');
+    preview.classList.add(colorClass);
+    savePreferences();
 }
 
 async function downloadPDF() {

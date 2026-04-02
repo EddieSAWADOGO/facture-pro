@@ -41,29 +41,58 @@
         </div>
     </div>
 
-    <header class="bg-white border-b-2 border-custom-blue px-3 py-2 md:p-4 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-6xl mx-auto flex flex-row justify-between items-center gap-2">
+    <header class="bg-white border-b-2 border-custom-blue px-4 py-3 sticky top-0 z-50 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
             <h1 class="text-lg md:text-xl font-bold tracking-tight whitespace-nowrap">
                 <i class="fa-solid fa-file-invoice mr-1 text-custom-blue"></i>Facture<span class="text-custom-blue">Pro</span>
             </h1>
-            <div class="flex flex-row items-center gap-2 md:gap-4 overflow-x-auto">
-                <div class="flex items-center gap-2">
-                    <select id="font-selector" class="header-select-sm !bg-blue-50" onchange="changeFont()">
-                        <option value="" disabled selected hidden>Police...</option>
-                        <option value="font-sans">Standard</option>
-                        <option value="font-serif">Serif Élégant</option>
-                        <option value="font-mono">Monospace</option>
-                        <option value="font-modern">Modern Géométrique</option>
-                    </select>
-                    <select id="color-selector" class="header-select-sm !bg-blue-50" onchange="changeColor()">
-                        <option value="" disabled selected hidden>Thème...</option>
-                        <option value="color-blue">Bleu Professionnel</option>
-                        <option value="color-green">Vert Naturel</option>
-                        <option value="color-red">Rouge Premium</option>
-                        <option value="color-orange">Orange Dynamique</option>
-                        <option value="color-purple">Violet Moderne</option>
-                        <option value="color-teal">Turquoise Frais</option>
-                    </select>
+            
+            <!-- Menu Hamburger Mobile -->
+            <button id="mobile-menu-btn" class="lg:hidden text-custom-blue text-2xl" onclick="toggleMobileMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <!-- Sélecteurs de configuration -->
+            <div id="nav-menu" class="hidden lg:flex flex-col lg:flex-row absolute lg:relative top-full left-0 w-full lg:w-auto bg-white lg:bg-transparent p-6 lg:p-0 border-b lg:border-0 shadow-2xl lg:shadow-none items-center gap-4 z-[1001]">
+                <div class="mobile-config-card grid grid-cols-1 md:grid-cols-2 lg:flex items-center gap-3 w-full lg:w-auto">
+                    <div class="flex flex-col lg:flex-row gap-1 lg:items-center">
+                        <label class="lg:hidden text-[10px] font-bold text-blue-200 uppercase ml-1">Language</label>
+                        <select id="lang-selector" class="header-select-sm" onchange="changeLanguage(this.value)">
+                        <option value="fr">Français</option>
+                        <option value="en">English</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col lg:flex-row gap-1 lg:items-center">
+                        <label class="lg:hidden text-[10px] font-bold text-blue-200 uppercase ml-1">Currency</label>
+                        <select id="currency-selector" class="header-select-sm" onchange="changeCurrency(this.value)"></select>
+                    </div>
+                    <div class="flex flex-col lg:flex-row gap-1 lg:items-center">
+                        <label class="lg:hidden text-[10px] font-bold text-blue-200 uppercase ml-1">Font</label>
+                        <select id="font-selector" class="header-select-sm" onchange="changeFont(this.value)">
+                        <option value="font-sans">Inter</option>
+                        <option value="font-serif">Merriweather</option>
+                        <option value="font-mono">Fira Code</option>
+                        <option value="font-modern">Montserrat</option>
+                        <option value="font-playfair">Playfair</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col lg:flex-row gap-1 lg:items-center">
+                        <label class="lg:hidden text-[10px] font-bold text-blue-200 uppercase ml-1">Theme</label>
+                        <select id="color-selector" class="header-select-sm" onchange="changeColor(this.value)">
+                        <option value="color-blue" data-i18n="theme_blue">Bleu Pro</option>
+                        <option value="color-indigo" data-i18n="theme_indigo">Indigo Royal</option>
+                        <option value="color-green" data-i18n="theme_green">Vert Émeraude</option>
+                        <option value="color-teal" data-i18n="theme_teal">Turquoise</option>
+                        <option value="color-purple" data-i18n="theme_purple">Violet Moderne</option>
+                        <option value="color-orange" data-i18n="theme_orange">Orange Énergie</option>
+                        <option value="color-slate" data-i18n="theme_slate">Gris Anthracite</option>
+                        <option value="color-pink" data-i18n="theme_pink">Rose Business</option>
+                        <option value="color-amber" data-i18n="theme_amber">Ambre Chaud</option>
+                        <option value="color-cyan" data-i18n="theme_cyan">Cyan Arctique</option>
+                        <option value="color-lime" data-i18n="theme_lime">Citron Vert</option>
+                        <option value="color-dark" data-i18n="theme_dark">Noir Intense</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -72,79 +101,78 @@
 
     <main class="flex-grow p-4 md:p-6 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        <section class="space-y-6">
-            <div class="bg-white p-5 border border-gray-200 shadow-sm">
-                <h2 class="text-[15px] font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-custom-blue"><i class="fa-solid fa-building mr-2"></i>Vos Informations</h2>
+        <section class="space-y-6" id="input-section">
+            <div class="bg-white p-5 border border-gray-200 shadow-sm rounded-xl">
+                <h2 class="text-[15px] font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-custom-blue" data-i18n="title_biller"><i class="fa-solid fa-building mr-2"></i>Vos Informations</h2>
                 <div class="space-y-3">
                     <div class="flex flex-col gap-1">
-                        <label class="text-sm font-bold text-gray-500 uppercase">Logo de l'entreprise</label>
-                        <input type="file" id="biller-logo-input" accept="image/*" class="text-sm file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-custom-blue hover:file:bg-blue-100 cursor-pointer" onchange="handleLogoUpload(event)">
+                        <label class="text-sm font-bold text-gray-500 uppercase" data-i18n="label_logo">Logo de l'entreprise</label>
+                        <div class="flex items-center gap-3">
+                            <label for="biller-logo-input" class="cursor-pointer bg-blue-50 text-custom-blue px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-100 transition-colors inline-block" data-i18n="label_logo_btn">Choisir un logo</label>
+                            <span id="file-name-display" class="text-xs text-gray-400 italic" data-i18n="label_no_file">Aucun fichier choisi</span>
+                            <input type="file" id="biller-logo-input" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+                        </div>
                     </div>
-                    <input type="text" id="biller-name" placeholder="Nom officiel de votre entreprise" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                    <input type="text" id="biller-name" data-i18n-placeholder="ph_biller_name" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                     <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="biller-rccm" placeholder="N° Registre de Commerce (RCCM)" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
-                        <input type="text" id="biller-ifu" placeholder="N° Identifiant Fiscal (IFU)" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                        <input type="text" id="biller-rccm" data-i18n-placeholder="ph_rccm" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                        <input type="text" id="biller-ifu" data-i18n-placeholder="ph_ifu" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                     </div>
-                    <input type="email" id="biller-email" placeholder="Email de contact" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
-                    <input type="text" id="biller-phone" placeholder="Numéro de téléphone" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
-                    <input type="text" id="biller-address" placeholder="Siège social / Adresse" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                    <input type="email" id="biller-email" data-i18n-placeholder="ph_email" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                    <input type="text" id="biller-phone" data-i18n-placeholder="ph_phone" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                    <input type="text" id="biller-address" data-i18n-placeholder="ph_address" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                     <div class="grid grid-cols-2 gap-3">
                         <div class="flex flex-col justify-end gap-1">
-                            <label class="text-sm font-bold text-gray-400 uppercase leading-tight">Date Facture</label>
+                            <label class="text-sm font-bold text-gray-400 uppercase leading-tight" data-i18n="label_date_invoice">Date Facture</label>
                             <input type="date" id="invoice-date" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updateInvoiceDate(); updatePreview()">
                         </div>
                         <div class="flex flex-col justify-end gap-1">
-                            <label class="text-sm font-bold text-gray-400 uppercase leading-tight">Échéance paiement</label>
+                            <label class="text-sm font-bold text-gray-400 uppercase leading-tight" data-i18n="label_due_date">Échéance paiement</label>
                             <input type="date" id="invoice-due-date" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white p-5 border border-gray-200 shadow-sm">
-                <h2 class="text-[15px] font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-blue-800"><i class="fa-solid fa-user-tie mr-2"></i>Informations du Client</h2>
+            <div class="bg-white p-5 border border-gray-200 shadow-sm rounded-xl">
+                <h2 class="text-[15px] font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-custom-blue" data-i18n="title_client"><i class="fa-solid fa-user-tie mr-2"></i>Informations du Client</h2>
                 <div class="space-y-3">
-                    <input type="text" id="client-name" placeholder="Nom complet ou Raison sociale du client" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
-                    <input type="text" id="client-phone" placeholder="Numéro de téléphone du client" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                    <input type="text" id="client-name" data-i18n-placeholder="ph_client_name" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                    <input type="text" id="client-phone" data-i18n-placeholder="ph_client_phone" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                     <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="client-rccm" placeholder="RCCM Client (Optionnel)" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
-                        <input type="text" id="client-ifu" placeholder="IFU Client (Optionnel)" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                        <input type="text" id="client-rccm" data-i18n-placeholder="ph_rccm_opt" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
+                        <input type="text" id="client-ifu" data-i18n-placeholder="ph_ifu_opt" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none" oninput="updatePreview()">
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white p-5 border border-gray-200 shadow-sm">
+            <div class="bg-white p-5 border border-gray-200 shadow-sm rounded-xl">
                 <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
-                    <h2 class="text-[15px] font-bold uppercase tracking-wide text-custom-blue"><i class="fa-solid fa-boxes-stacked mr-2"></i>Prestations</h2>
+                    <h2 class="text-[15px] font-bold uppercase tracking-wide text-custom-blue" data-i18n="title_items"><i class="fa-solid fa-boxes-stacked mr-2"></i>Prestations</h2>
                     <button onclick="addItem()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 h-8 text-sm border border-blue-200 font-bold transition-colors flex-shrink-0 whitespace-nowrap rounded flex items-center gap-2">
-                        <i class="fa-solid fa-plus text-xs"></i> Ajouter
+                        <i class="fa-solid fa-plus text-xs"></i> <span data-i18n="btn_add">Ajouter</span>
                     </button>
                 </div>
                 <div id="items-container" class="space-y-3"></div>
             </div>
 
-            <div class="bg-white p-5 border border-gray-200 shadow-sm">
-                <h2 class="text-[15px] font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-custom-blue"><i class="fa-solid fa-percent mr-2"></i>Gestion des Taxes</h2>
+            <div class="bg-white p-5 border border-gray-200 shadow-sm rounded-xl">
+                <h2 class="text-[15px] font-bold mb-4 border-b border-gray-100 pb-2 uppercase tracking-wide text-custom-blue" data-i18n="title_taxes"><i class="fa-solid fa-percent mr-2"></i>Gestion des Taxes</h2>
                 <div class="space-y-3">
                     <div class="flex flex-col gap-1">
-                        <label class="text-sm font-bold text-gray-500 uppercase">Taxes Prédéfinies ou Personnalisées</label>
+                        <label class="text-sm font-bold text-gray-500 uppercase" data-i18n="label_tax_preset">Taxes Prédéfinies</label>
                         <select id="tax-preset-selector" class="w-full border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm">
-                            <option value="0">TVA (18%)</option>
-                            <option value="1">TVA (5.5%)</option>
-                            <option value="2">Taxe d'habitation (10%)</option>
-                            <option value="3">Taxe professionnelle (2%)</option>
-                            <option value="custom">Taxe personnalisée</option>
                         </select>
                     </div>
-                    <div class="grid grid-cols-2 gap-2 bg-gray-50 p-3 border border-gray-200">
-                        <input type="text" id="custom-tax-name" placeholder="Nom (ex: TVA Custom)" class="border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm">
-                        <input type="number" id="custom-tax-rate" placeholder="Taux (%)" step="0.1" class="border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm">
+                    <div class="grid grid-cols-2 gap-2 bg-gray-50 p-3 border border-gray-200 rounded-lg">
+                        <input type="text" id="custom-tax-name" data-i18n-placeholder="ph_tax_name" class="border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm">
+                        <input type="number" id="custom-tax-rate" data-i18n-placeholder="ph_tax_rate" step="0.1" class="border border-gray-300 p-2 focus:border-blue-700 focus:outline-none text-sm">
                     </div>
                     <button onclick="addTax()" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 h-9 text-sm border border-blue-200 font-bold rounded flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-plus text-xs"></i> Ajouter une Taxe
+                        <i class="fa-solid fa-plus text-xs"></i> <span data-i18n="btn_add_tax">Ajouter une Taxe</span>
                     </button>
                     <div id="applied-taxes-container" class="space-y-2 bg-gray-50 p-2 border border-gray-100 min-h-[40px]">
-                        <p class="text-gray-500 text-sm">Aucune taxe ajoutée.</p>
+                        <p class="text-gray-500 text-sm" data-i18n="no_tax">Aucune taxe ajoutée.</p>
                     </div>
                 </div>
             </div>
@@ -153,10 +181,10 @@
         <section class="flex flex-col">
             <div class="sticky top-24">
                 <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
-                    <h2 class="text-xs font-bold uppercase tracking-wide text-gray-400 hidden sm:block"><i class="fa-solid fa-eye mr-1"></i>Aperçu</h2>
+                    <h2 class="text-xs font-bold uppercase tracking-wide text-gray-400 hidden sm:block" data-i18n="title_preview"><i class="fa-solid fa-eye mr-1"></i>Aperçu</h2>
                     <div class="flex flex-row items-center w-full sm:w-auto">
-                        <button onclick="downloadPDF()" class="w-full sm:w-auto bg-custom-blue text-white px-6 h-10 hover-bg-custom-blue flex items-center justify-center font-bold text-sm tracking-wide shadow-md transition-all active:scale-95 whitespace-nowrap rounded-lg">
-                            <i class="fa-solid fa-file-pdf mr-2 text-lg"></i> TÉLÉCHARGER LA FACTURE
+                        <button onclick="downloadPDF()" class="w-full sm:w-auto bg-custom-blue text-white px-6 h-10 hover-bg-custom-blue flex items-center justify-center font-bold text-sm tracking-wide shadow-md transition-all active:scale-95 whitespace-nowrap rounded-lg uppercase">
+                            <i class="fa-solid fa-file-pdf mr-2 text-lg"></i> <span data-i18n="btn_download">Télécharger la facture</span>
                         </button>
                     </div>
                 </div>
@@ -169,24 +197,24 @@
                                 <div id="prev-logo-container" class="mb-4 hidden">
                                     <img id="prev-logo" src="" alt="Logo" class="max-h-16 object-contain">
                                 </div>
-                                <h1 class="text-xl font-black tracking-tight text-blue-900 uppercase" id="prev-biller-name">NOM DE VOTRE STRUCTURE</h1>
+                                <h1 class="text-xl font-black tracking-tight text-blue-900 uppercase" id="prev-biller-name" data-i18n="ph_biller_name_preview">NOM DE VOTRE STRUCTURE</h1>
                                 <div class="mt-4 space-y-1 text-gray-600 text-[11px] leading-relaxed uppercase">
                                     <p class="font-bold text-gray-800">RCCM : <span id="prev-biller-rccm" class="font-medium">-</span></p>
                                     <p class="font-bold text-gray-800">IFU : <span id="prev-biller-ifu" class="font-medium">-</span></p>
-                                    <p>Adresse : <span id="prev-biller-address">-</span></p>
-                                    <p>Téléphone : <span id="prev-biller-phone">-</span></p>
+                                    <p><span data-i18n="label_address">Adresse</span> : <span id="prev-biller-address">-</span></p>
+                                    <p><span data-i18n="label_phone">Téléphone</span> : <span id="prev-biller-phone">-</span></p>
                                     <p>Email : <span id="prev-biller-email">-</span></p>
                                 </div>
                             </div>
                             <div class="text-right flex-shrink-0">
-                                <h2 class="text-4xl font-black text-custom-blue uppercase mb-2">FACTURE</h2>
+                                <h2 class="text-4xl font-black text-custom-blue uppercase mb-2" data-i18n="invoice_title">FACTURE</h2>
                                 <div class="text-[11px] space-y-2 mt-4">
                                     <p class="flex justify-end gap-2 items-center">
-                                        <span class="text-gray-500 uppercase font-bold tracking-widest">Date d'émission :</span>
+                                        <span class="text-gray-500 uppercase font-bold tracking-widest" data-i18n="label_issue_date">Date d'émission :</span>
                                         <span id="prev-date" class="font-bold text-gray-900 text-sm">-</span>
                                     </p>
                                     <p class="flex justify-end gap-2 items-center border-t border-gray-100 pt-2">
-                                        <span class="text-red-500 uppercase font-bold tracking-widest">Échéance :</span>
+                                        <span class="text-red-500 uppercase font-bold tracking-widest" data-i18n="label_expiry">Échéance :</span>
                                         <span id="prev-due-date" class="font-bold text-red-600 text-sm">-</span>
                                     </p>
                                 </div>
@@ -195,11 +223,11 @@
 
                         <!-- Informations Client -->
                         <div class="grid grid-cols-2 gap-8 mb-10">
-                            <div class="bg-gray-50 p-4 border-l-4 border-custom-blue">
-                                <p class="text-[10px] uppercase font-black text-custom-blue mb-2 tracking-widest">DESTINATAIRE</p>
-                                <h3 class="text-lg font-bold text-gray-900 leading-tight mb-2" id="prev-client-name">NOM DU CLIENT</h3>
+                            <div class="bg-gray-50 p-4 border-l-4 theme-border">
+                                <p class="text-[10px] uppercase font-black theme-color mb-2 tracking-widest" data-i18n="label_dest">DESTINATAIRE</p>
+                                <h3 class="text-lg font-bold text-gray-900 leading-tight mb-2" id="prev-client-name" data-i18n="ph_client_name_preview">NOM DU CLIENT</h3>
                                 <div class="text-[11px] text-gray-600 space-y-1">
-                                    <p>Téléphone: <span id="prev-client-phone" class="font-bold text-gray-800">-</span></p>
+                                    <p><span data-i18n="label_phone">Téléphone</span>: <span id="prev-client-phone" class="font-bold text-gray-800">-</span></p>
                                     <p>RCCM: <span id="prev-client-rccm">-</span></p>
                                     <p>IFU: <span id="prev-client-ifu">-</span></p>
                                 </div>
@@ -211,10 +239,10 @@
                         <table class="w-full text-left mb-8">
                             <thead>
                                 <tr class="bg-custom-blue text-white">
-                                    <th class="py-2 px-3 font-bold text-[11px] uppercase tracking-wider w-1/2 border-r border-white/20 text-left">Désignation</th>
-                                    <th class="py-2 px-3 font-bold text-[11px] uppercase tracking-wider text-center border-r border-white/20">Qté</th>
-                                    <th class="py-2 px-3 font-bold text-[11px] uppercase tracking-wider text-right border-r border-white/20">P. Unit.</th>
-                                    <th class="py-2 px-3 font-bold text-[11px] uppercase tracking-wider text-right">Montant</th>
+                                    <th class="py-2 px-3 font-bold text-[11px] uppercase tracking-wider w-1/2 border-r border-white/20 text-left" data-i18n="th_desc">Désignation</th>
+                                    <th class="py-2 px-3 font-bold text-[11px] uppercase tracking-wider text-center border-r border-white/20" data-i18n="th_qty">Qté</th>
+                                    <th class="py-2 px-3 font-bold text-[11px] uppercase tracking-wider text-right border-r border-white/20" data-i18n="th_price">P. Unit.</th>
+                                    <th class="py-2 px-3 font-bold text-[11px] uppercase tracking-wider text-right" data-i18n="th_total">Montant</th>
                                 </tr>
                             </thead>
                             <tbody id="prev-items-body"></tbody>
@@ -224,18 +252,18 @@
                         <div class="flex flex-col items-end w-full">
                             <div class="w-72 space-y-1.5">
                                 <div class="flex justify-between text-[12px] text-gray-600">
-                                    <span>Sous-total</span>
+                                    <span data-i18n="label_subtotal">Sous-total</span>
                                     <span id="prev-subtotal" class="font-bold">0 CFA</span>
                                 </div>
                                 <div id="prev-taxes-container" class="space-y-1"></div>
-                                <div class="flex justify-between py-2 mt-2 border-t-2 border-custom-blue text-lg font-black text-custom-blue">
-                                    <span>TOTAL NET</span>
+                                <div class="flex justify-between py-2 mt-2 border-t-2 theme-border text-lg font-black theme-color">
+                                    <span data-i18n="label_net_total">TOTAL NET</span>
                                     <span id="prev-total">0 CFA</span>
                                 </div>
                             </div>
                             <!-- Montant en lettres sous le montant net -->
                             <div id="prev-total-words-container" class="mt-4 w-full text-right p-4 bg-gray-50 border-t border-gray-200">
-                                <p class="text-[10px] text-gray-500 uppercase font-black mb-1">Arrêtée la présente facture à la somme de :</p>
+                                <p class="text-[10px] text-gray-500 uppercase font-black mb-1" data-i18n="label_sum_words">Arrêtée la présente facture à la somme de :</p>
                                 <p id="prev-total-words" class="text-[13px] font-bold text-gray-900 leading-tight italic">Zéro francs CFA</p>
                             </div>
                         </div>
@@ -250,23 +278,23 @@
         <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-10 text-sm">
             <div>
                 <h3 class="font-bold text-xl uppercase tracking-widest text-white mb-4">FacturePro</h3>
-                <p class="text-blue-200 leading-relaxed italic">"L'excellence dans votre facturation reflète le sérieux de votre expertise."</p>
-                <p class="text-blue-400 mt-4 underline decoration-blue-500">Besoin d'un logiciel de gestion complet ?</p>
+                <p class="text-blue-200 leading-relaxed italic" data-i18n="footer_quote">"L'excellence dans votre facturation reflète le sérieux de votre expertise."</p>
+                <p class="text-blue-400 mt-4 underline decoration-blue-500" data-i18n="footer_help">Besoin d'un logiciel de gestion complet ?</p>
             </div>
             
             <div class="flex flex-col space-y-3">
-                <p class="text-blue-400 uppercase text-xs font-bold tracking-widest mb-2 border-b border-blue-800 pb-1">Support & Expertise</p>
-                <a href="https://wa.me/22667969761" target="_blank" class="hover:text-blue-300 flex items-center transition-colors"><i class="fa-brands fa-whatsapp w-6 text-lg"></i> Contact Direct WhatsApp</a>
+                <p class="text-blue-400 uppercase text-xs font-bold tracking-widest mb-2 border-b border-blue-800 pb-1" data-i18n="footer_support">Support & Expertise</p>
+                <a href="https://wa.me/22667969761" target="_blank" class="hover:text-blue-300 flex items-center transition-colors"><i class="fa-brands fa-whatsapp w-6 text-lg"></i> <span data-i18n="footer_whatsapp">Contact Direct WhatsApp</span></a>
                 <a href="mailto:sawadogoeddie05@gmail.com" class="hover:text-blue-300 flex items-center transition-colors"><i class="fa-solid fa-envelope w-6 text-lg"></i> sawadogoeddie05@gmail.com</a>
             </div>
             
             <div class="flex flex-col space-y-3">
-                <p class="text-blue-400 uppercase text-xs font-bold tracking-widest mb-2 border-b border-blue-800 pb-1">Nos Réseaux Sociaux</p>
+                <p class="text-blue-400 uppercase text-xs font-bold tracking-widest mb-2 border-b border-blue-800 pb-1" data-i18n="footer_social">Nos Réseaux Sociaux</p>
                 <a href="https://www.linkedin.com/in/eddie-sawadogo" target="_blank" class="hover:text-blue-300 flex items-center transition-colors"><i class="fa-brands fa-linkedin w-6 text-lg"></i> LinkedIn Professionnel</a>
                 <a href="https://www.facebook.com/profile.php?id=100066631119683" target="_blank" class="hover:text-blue-300 flex items-center transition-colors"><i class="fa-brands fa-facebook w-6 text-lg"></i> Page Facebook</a>
             </div>
         </div>
-        <div class="max-w-6xl mx-auto px-4 mt-10 pt-6 border-t border-blue-800 text-center text-blue-500 text-xs">
+        <div class="max-w-6xl mx-auto px-4 mt-10 pt-6 border-t border-blue-800 text-center text-blue-500 text-xs" data-i18n="footer_credits">
             © Développé le 26 Mars 2026 par Eddie Sawadogo.
         </div>
     </footer>

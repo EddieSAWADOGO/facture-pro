@@ -3,7 +3,38 @@
  */
 
 // Convertir les nombres en lettres (français)
-function numberToWords(num) {
+function numberToWords(num, lang = 'fr') {
+    if (lang === 'en') {
+        const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+        const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+        const scales = ['', 'thousand', 'million', 'billion'];
+        
+        if (num === 0) return 'zero';
+        let words = '';
+        let scaleIndex = 0;
+
+        while (num > 0) {
+            if (num % 1000 !== 0) {
+                let chunk = num % 1000;
+                let str = '';
+                if (chunk >= 100) {
+                    str += ones[Math.floor(chunk / 100)] + ' hundred ';
+                    chunk %= 100;
+                }
+                if (chunk >= 20) {
+                    str += tens[Math.floor(chunk / 10)] + (chunk % 10 !== 0 ? '-' + ones[chunk % 10] : '');
+                } else if (chunk > 0) {
+                    str += ones[chunk];
+                }
+                words = str + (scales[scaleIndex] ? ' ' + scales[scaleIndex] : '') + ' ' + words;
+            }
+            num = Math.floor(num / 1000);
+            scaleIndex++;
+        }
+        return words.trim();
+    }
+
+    // Français (Logique existante optimisée)
     const ones = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf'];
     const teens = ['dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
     const tens = ['', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante-dix', 'quatre-vingt', 'quatre-vingt-dix'];
@@ -17,7 +48,7 @@ function numberToWords(num) {
 
     while (num > 0) {
         if (num % 1000 !== 0) {
-            words = convertBelow1000(num % 1000, ones, teens, tens) + (scales[scaleIndex] ? ' ' + scales[scaleIndex] : '') + (words ? ' ' + words : '');
+            words = convertBelow1000(num % 1000, ones, teens, tens, scales) + (scales[scaleIndex] ? ' ' + scales[scaleIndex] : '') + (words ? ' ' + words : '');
         }
         num = Math.floor(num / 1000);
         scaleIndex++;
