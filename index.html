@@ -48,26 +48,26 @@
             </h1>
             
             <!-- Menu Hamburger Mobile -->
-            <button id="mobile-menu-btn" class="lg:hidden text-custom-blue text-2xl" onclick="toggleMobileMenu()">
+            <button id="mobile-menu-btn" class="lg:hidden text-custom-blue text-2xl" onclick="toggleMobileMenu(event)">
                 <i class="fa-solid fa-bars"></i>
             </button>
 
             <!-- Sélecteurs de configuration -->
-            <div id="nav-menu" class="hidden lg:flex flex-col lg:flex-row absolute lg:relative top-full left-0 w-full lg:w-auto bg-white lg:bg-transparent p-6 lg:p-0 border-b lg:border-0 shadow-2xl lg:shadow-none items-center gap-4 z-[1001]">
-                <div class="mobile-config-card grid grid-cols-1 md:grid-cols-2 lg:flex items-center gap-3 w-full lg:w-auto">
+            <div id="nav-menu" class="hidden lg:flex flex-col lg:flex-row absolute lg:relative top-full left-0 w-full lg:w-auto bg-white lg:bg-transparent p-4 lg:p-0 border-b lg:border-0 shadow-2xl lg:shadow-none items-center gap-4 z-[1001]">
+                <div class="mobile-config-card grid grid-cols-2 lg:flex items-center gap-3 w-full lg:w-auto">
                     <div class="flex flex-col lg:flex-row gap-1 lg:items-center">
-                        <label class="lg:hidden text-[10px] font-bold text-blue-200 uppercase ml-1">Language</label>
+                        <label class="lg:hidden text-[9px] font-bold text-blue-100 uppercase ml-1">Language</label>
                         <select id="lang-selector" class="header-select-sm" onchange="changeLanguage(this.value)">
                         <option value="fr">Français</option>
                         <option value="en">English</option>
                         </select>
                     </div>
                     <div class="flex flex-col lg:flex-row gap-1 lg:items-center">
-                        <label class="lg:hidden text-[10px] font-bold text-blue-200 uppercase ml-1">Currency</label>
+                        <label class="lg:hidden text-[9px] font-bold text-blue-100 uppercase ml-1">Currency</label>
                         <select id="currency-selector" class="header-select-sm" onchange="changeCurrency(this.value)"></select>
                     </div>
                     <div class="flex flex-col lg:flex-row gap-1 lg:items-center">
-                        <label class="lg:hidden text-[10px] font-bold text-blue-200 uppercase ml-1">Font</label>
+                        <label class="lg:hidden text-[9px] font-bold text-blue-100 uppercase ml-1">Font</label>
                         <select id="font-selector" class="header-select-sm" onchange="changeFont(this.value)">
                         <option value="font-sans">Inter</option>
                         <option value="font-serif">Merriweather</option>
@@ -77,20 +77,19 @@
                         </select>
                     </div>
                     <div class="flex flex-col lg:flex-row gap-1 lg:items-center">
-                        <label class="lg:hidden text-[10px] font-bold text-blue-200 uppercase ml-1">Theme</label>
+                        <label class="lg:hidden text-[9px] font-bold text-blue-100 uppercase ml-1">Theme</label>
                         <select id="color-selector" class="header-select-sm" onchange="changeColor(this.value)">
-                        <option value="color-blue" data-i18n="theme_blue">Bleu Pro</option>
-                        <option value="color-indigo" data-i18n="theme_indigo">Indigo Royal</option>
-                        <option value="color-green" data-i18n="theme_green">Vert Émeraude</option>
+                        <option value="color-blue" data-i18n="theme_blue">Bleu</option>
+                        <option value="color-green" data-i18n="theme_green">Vert</option>
+                        <option value="color-yellow" data-i18n="theme_yellow">Jaune</option>
+                        <option value="color-orange" data-i18n="theme_orange">Orange</option>
+                        <option value="color-purple" data-i18n="theme_purple">Violet</option>
+                        <option value="color-pink" data-i18n="theme_pink">Rose</option>
                         <option value="color-teal" data-i18n="theme_teal">Turquoise</option>
-                        <option value="color-purple" data-i18n="theme_purple">Violet Moderne</option>
-                        <option value="color-orange" data-i18n="theme_orange">Orange Énergie</option>
-                        <option value="color-slate" data-i18n="theme_slate">Gris Anthracite</option>
-                        <option value="color-pink" data-i18n="theme_pink">Rose Business</option>
-                        <option value="color-amber" data-i18n="theme_amber">Ambre Chaud</option>
-                        <option value="color-cyan" data-i18n="theme_cyan">Cyan Arctique</option>
-                        <option value="color-lime" data-i18n="theme_lime">Citron Vert</option>
-                        <option value="color-dark" data-i18n="theme_dark">Noir Intense</option>
+                        <option value="color-indigo" data-i18n="theme_indigo">Indigo</option>
+                        <option value="color-cyan" data-i18n="theme_cyan">Cyan</option>
+                        <option value="color-gray" data-i18n="theme_gray">Gris</option>
+                        <option value="color-black" data-i18n="theme_black">Noir</option>
                         </select>
                     </div>
                 </div>

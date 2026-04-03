@@ -70,18 +70,17 @@ const translations = {
         label_subtotal: "Sous-total",
         label_net_total: "TOTAL NET",
         label_sum_words: "Arrêtée la présente facture à la somme de :",
-        theme_blue: "Bleu Pro",
-        theme_indigo: "Indigo Royal",
-        theme_green: "Vert Émeraude",
+        theme_blue: "Bleu",
+        theme_green: "Vert",
+        theme_yellow: "Jaune",
+        theme_orange: "Orange",
+        theme_purple: "Violet",
+        theme_pink: "Rose",
         theme_teal: "Turquoise",
-        theme_purple: "Violet Moderne",
-        theme_orange: "Orange Énergie",
-        theme_slate: "Gris Anthracite",
-        theme_pink: "Rose Business",
-        theme_amber: "Ambre Chaud",
-        theme_cyan: "Cyan Arctique",
-        theme_lime: "Citron Vert",
-        theme_dark: "Noir Intense",
+        theme_indigo: "Indigo",
+        theme_cyan: "Cyan",
+        theme_gray: "Gris",
+        theme_black: "Noir",
         footer_quote: "\"L'excellence dans votre facturation reflète le sérieux de votre expertise.\"",
         footer_help: "Besoin d'un logiciel de gestion complet ?",
         footer_support: "Support & Expertise",
@@ -139,18 +138,17 @@ const translations = {
         label_subtotal: "Subtotal",
         label_net_total: "NET TOTAL",
         label_sum_words: "This invoice is settled at the total amount of:",
-        theme_blue: "Pro Blue",
-        theme_indigo: "Royal Indigo",
-        theme_green: "Emerald Green",
+        theme_blue: "Blue",
+        theme_green: "Green",
+        theme_yellow: "Yellow",
+        theme_orange: "Orange",
+        theme_purple: "Purple",
+        theme_pink: "Pink",
         theme_teal: "Teal",
-        theme_purple: "Modern Purple",
-        theme_orange: "Energy Orange",
-        theme_slate: "Slate Grey",
-        theme_pink: "Business Pink",
-        theme_amber: "Warm Amber",
-        theme_cyan: "Arctic Cyan",
-        theme_lime: "Lime Green",
-        theme_dark: "Deep Black",
+        theme_indigo: "Indigo",
+        theme_cyan: "Cyan",
+        theme_gray: "Gray",
+        theme_black: "Black",
         footer_quote: "\"Excellence in your invoicing reflects the quality of your expertise.\"",
         footer_help: "Need a complete management software?",
         footer_support: "Support & Expertise",
@@ -216,10 +214,23 @@ function init() {
     updatePreview();
 }
 
-function toggleMobileMenu() {
+function toggleMobileMenu(event) {
+    if (event) event.stopPropagation();
     const menu = document.getElementById('nav-menu');
     menu.classList.toggle('hidden');
 }
+
+// Fermer le menu si on clique n'importe où ailleurs
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('nav-menu');
+    const btn = document.getElementById('mobile-menu-btn');
+    
+    if (!menu.classList.contains('hidden')) {
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+            menu.classList.add('hidden');
+        }
+    }
+});
 
 function changeLanguage(lang) {
     currentLanguage = lang;
@@ -519,7 +530,10 @@ function changeFont(fontClass) {
 function changeColor(colorClass) {
     currentColor = colorClass;
     const preview = document.getElementById('invoice-preview');
-    preview.classList.remove('color-blue', 'color-indigo', 'color-green', 'color-teal', 'color-purple', 'color-orange', 'color-slate');
+    // Nettoie toutes les classes de couleur précédentes
+    preview.classList.forEach(cls => {
+        if (cls.startsWith('color-')) preview.classList.remove(cls);
+    });
     preview.classList.add(colorClass);
     savePreferences();
 }
