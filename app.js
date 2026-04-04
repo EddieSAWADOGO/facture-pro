@@ -456,7 +456,10 @@ function updatePreview() {
     document.getElementById('prev-biller-rccm').textContent = document.getElementById('biller-rccm').value || '-';
     document.getElementById('prev-biller-ifu').textContent = document.getElementById('biller-ifu').value || '-';
     
-    // Dates
+    // Dates - Utilise la date du jour par défaut si vide
+    const invoiceDate = document.getElementById('invoice-date').value || new Date().toISOString().split('T')[0];
+    document.getElementById('prev-date').textContent = formatDateByLang(invoiceDate);
+
     const dueDate = document.getElementById('invoice-due-date').value;
     const prevDueDate = document.getElementById('prev-due-date');
     prevDueDate.textContent = dueDate ? formatDateByLang(dueDate) : dict.label_not_specified;
