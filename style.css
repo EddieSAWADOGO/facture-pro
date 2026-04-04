@@ -262,6 +262,47 @@ button, input, select, textarea, .bg-white:not(#invoice-preview), #pdf-loader > 
     text-align: center;
 }
 
+/* Alignement global de l'en-tête (Fix Web & Mobile) */
+#invoice-preview .flex.justify-between.items-start {
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    gap: 0 !important;
+    align-items: baseline !important;
+}
+
+#invoice-preview .flex.justify-between.items-start > div {
+    display: contents !important;
+}
+
+#prev-logo-container {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+}
+
+#prev-biller-name {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    align-self: end !important;
+}
+
+#invoice-preview h2 {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    text-align: right !important;
+    align-self: end !important;
+}
+
+#invoice-preview .mt-4.space-y-1 {
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+}
+
+#invoice-preview .text-\[11px\].space-y-2.mt-4 {
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+    text-align: right !important;
+}
+
 /* Optimisation pour les petits écrans (ex: Itel A70) */
 #invoice-preview {
     max-width: 100%;
