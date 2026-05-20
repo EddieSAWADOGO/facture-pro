@@ -452,10 +452,24 @@ function updatePreview() {
     document.getElementById('prev-biller-name').textContent = document.getElementById('biller-name').value || dict.ph_biller_name_preview;
     document.getElementById('prev-biller-phone').textContent = document.getElementById('biller-phone').value || dict.label_not_specified;
     document.getElementById('prev-biller-email').textContent = document.getElementById('biller-email').value || 'email@exemple.com';
-    document.getElementById('prev-biller-address').textContent = document.getElementById('biller-address').value || '-';
-    document.getElementById('prev-biller-rccm').textContent = document.getElementById('biller-rccm').value || '-';
-    document.getElementById('prev-biller-ifu').textContent = document.getElementById('biller-ifu').value || '-';
     
+    // Gérer l'affichage conditionnel de l'adresse, RCCM et IFU de l'émetteur
+    const billerAddress = document.getElementById('biller-address').value;
+    const billerRccm = document.getElementById('biller-rccm').value;
+    const billerIfu = document.getElementById('biller-ifu').value;
+
+    const billerDetailsContainer = document.getElementById('biller-details-container');
+    billerDetailsContainer.innerHTML = `
+        ${billerRccm ? `<p class="font-bold text-gray-800">RCCM : <span id="prev-biller-rccm" class="font-medium">${billerRccm}</span></p>` : ''}
+        ${billerIfu ? `<p class="font-bold text-gray-800">IFU : <span id="prev-biller-ifu" class="font-medium">${billerIfu}</span></p>` : ''}
+        ${billerAddress ? `<p><span data-i18n="label_address">${dict.label_address}</span> : <span id="prev-biller-address">${billerAddress}</span></p>` : ''}
+        <p><span data-i18n="label_phone">${dict.label_phone}</span> : <span id="prev-biller-phone">${document.getElementById('biller-phone').value || dict.label_not_specified}</span></p>
+        <p>Email : <span id="prev-biller-email">${document.getElementById('biller-email').value || 'email@exemple.com'}</span></p>
+    `;
+    // Re-assign text content for phone and email as they are always present
+    document.getElementById('prev-biller-phone').textContent = document.getElementById('biller-phone').value || dict.label_not_specified;
+    document.getElementById('prev-biller-email').textContent = document.getElementById('biller-email').value || 'email@exemple.com';
+
     // Dates - Utilise la date du jour par défaut si vide
     const invoiceDate = document.getElementById('invoice-date').value || new Date().toISOString().split('T')[0];
     document.getElementById('prev-date').textContent = formatDateByLang(invoiceDate);
@@ -466,10 +480,19 @@ function updatePreview() {
 
     // Client
     document.getElementById('prev-client-name').textContent = document.getElementById('client-name').value || dict.ph_client_name_preview;
-    document.getElementById('prev-client-phone').textContent = document.getElementById('client-phone').value || '-';
-    document.getElementById('prev-client-rccm').textContent = document.getElementById('client-rccm').value || '-';
-    document.getElementById('prev-client-ifu').textContent = document.getElementById('client-ifu').value || '-';
+    
+    // Gérer l'affichage conditionnel du téléphone, RCCM et IFU du client
+    const clientPhone = document.getElementById('client-phone').value;
+    const clientRccm = document.getElementById('client-rccm').value;
+    const clientIfu = document.getElementById('client-ifu').value;
 
+    const clientDetailsContainer = document.getElementById('client-details-container');
+    clientDetailsContainer.innerHTML = `
+        ${clientPhone ? `<p id="client-phone-line"><span data-i18n="label_phone">${dict.label_phone}</span>: <span id="prev-client-phone" class="font-bold text-gray-800">${clientPhone}</span></p>` : ''}
+        ${clientRccm ? `<p>RCCM: <span id="prev-client-rccm">${clientRccm}</span></p>` : ''}
+        ${clientIfu ? `<p>IFU: <span id="prev-client-ifu">${clientIfu}</span></p>` : ''}
+    `;
+    
     const tbody = document.getElementById('prev-items-body');
     tbody.innerHTML = '';
     let subtotal = 0;
@@ -583,9 +606,23 @@ async function downloadPDF() {
         const { jsPDF } = window.jspdf;
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
         const now = new Date();
-        const timestamp = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}_${now.getHours()}h${now.getMinutes()}`;
-        const clientName = document.getElementById('client-name').value || 'Client';
-        
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const timeStamp = `${hours}h${minutes}m${seconds}s`;
+        // Récupérer la date de la facture pour le nom du fichier
+        const invoiceDateInput = document.getElementById('invoice-date').value;
+        let formattedInvoiceDate = '';
+        if (invoiceDateInput) {
+            formattedInvoiceDate = invoiceDateInput; // Le format YYYY-MM-DD est déjà adapté
+        } else {
+            // Utiliser la date actuelle si la date de facture n'est pas définie
+            formattedInvoiceDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        }
+
+        let clientNameForFilename = document.getElementById('client-name').value || 'Client';
+        // Nettoyer le nom du client pour le nom du fichier (supprimer les caractères non alphanumériques, tirets ou underscores)
+        clientNameForFilename = clientNameForFilename.replace(/[^a-zA-Z0-9-_]/g, '');
         // Format A4 : Gestion multi-pages standard
         const pdf = new jsPDF('p', 'mm', 'a4');
         const imgWidth = 210;
@@ -603,8 +640,8 @@ async function downloadPDF() {
             pdf.addPage();
             pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
-        }
-        pdf.save(`Facture_${clientName}_${timestamp}.pdf`);
+        } 
+        pdf.save(`Facture_${clientNameForFilename}_${formattedInvoiceDate}_${timeStamp}.pdf`);
 
     } catch (err) {
         console.error('Erreur PDF:', err);
